@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StatEdu - Pemusatan Data</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f8ff;
+            --card: #ffffff;
+            --accent: #2f6bff;
+            --muted: #64748b;
+            --glass: rgba(255, 255, 255, 0.6);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+            margin: 0;
+            background: linear-gradient(180deg, #f7fbff 0%, var(--bg) 100%);
+            color: #0f1724;
+            padding: 28px;
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .brand {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #7dd3fc, #7c3aed);
+            display: grid;
+            place-items: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 22px;
+            box-shadow: 0 10px 24px rgba(124, 58, 237, 0.12);
+        }
+
+        .title {
+            margin: 0
+        }
+
+        .subtitle {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 14px
+        }
+
+        .panel {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+            align-items: start
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 8px 24px rgba(2, 6, 23, 0.06);
+            transition: transform .18s ease, box-shadow .18s ease;
+            border: 1px solid rgba(15, 23, 42, 0.04);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(2, 6, 23, 0.08)
+        }
+
+        .card .icon {
+            width: 44px;
+            height: 44;
+            border-radius: 10px;
+            display: inline-grid;
+            place-items: center;
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 8px
+        }
+
+        .card.blue .icon {
+            background: linear-gradient(135deg, #2f6bff, #5aa0ff)
+        }
+
+        .card.green .icon {
+            background: linear-gradient(135deg, #16a34a, #60d68b)
+        }
+
+        .card.purple .icon {
+            background: linear-gradient(135deg, #8b5cf6, #c084fc)
+        }
+
+        .card.orange .icon {
+            background: linear-gradient(135deg, #f59e0b, #fb923c)
+        }
+
+        .card h2 {
+            margin: 0 0 6px;
+            font-size: 16px
+        }
+
+        .card p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px
+        }
+
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 16px 16px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 9999;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            background: linear-gradient(135deg, #5a67d8, #7f9cf5);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-weight: 600;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-text #name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-text .meta {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chip {
+            background: #eef2ff;
+            color: #1e3a8a;
+            border: 1px solid #c7d2fe;
+            border-radius: 8px;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .chip:hover {
+            background: #e0e7ff;
+        }
+
+
+        .icon-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            color: #1e3a8a;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: #dbeafe;
+        }
+
+
+        .icon-btn svg {
+            width: 18px;
+            height: 18px;
+            display: block;
+            fill: currentColor;
+        }
+
+        body {
+            margin-top: 80px;
+        }
+
+        .explain {
+            margin-top: 12px;
+            color: var(--muted);
+            line-height: 1.5
+        }
+
+        .formula {
+            background: linear-gradient(135deg, #e0e7ff, #f5f8ff);
+            color: #1e3a8a;
+            font-family: "Courier New", monospace;
+            font-size: 1.6em;
+            font-weight: bold;
+            white-space: nowrap;
+            text-align: center;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin: 15px auto 5px;
+            display: block;
+            width: fit-content;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #c7d2fe;
+        }
+
+        .rumus-info {
+            text-align: center;
+            color: #475569;
+            font-size: 0.95em;
+            margin-top: 8px;
+        }
+
+        .rumus-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .rumus-info li {
+            margin: 3px 0;
+        }
+
+        table.calc {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px
+        }
+
+        table.calc th,
+        table.calc td {
+            padding: 8px;
+            border-bottom: 1px solid #eef2ff;
+            text-align: center
+        }
+
+        table.calc thead th {
+            background: #f1f5ff;
+            color: var(--muted);
+            font-weight: 600
+        }
+
+        .steps {
+            background: #fbfdff;
+            border-left: 4px solid rgba(47, 107, 255, 0.08);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px
+        }
+
+        .steps b {
+            display: inline-block;
+            width: 90px
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px
+        }
+
+        @media (max-width:980px) {
+            .panel {
+                grid-template-columns: 1fr
+            }
+
+            .sidebar {
+                order: -1
+            }
+        }
+
+        @media (max-width:460px) {
+            body {
+                padding: 16px
+            }
+        }
+
+        @media (max-width: 600px) {
+            .formula {
+                font-size: 0.9rem;
+                transform: scale(0.9);
+                display: inline-block;
+                background: linear-gradient(135deg, #e0e7ff, #f5f8ff);
+                color: #1e3a8a;
+                font-family: "Courier New", monospace;
+                font-weight: bold;
+                white-space: nowrap;
+                text-align: center;
+                padding: 12px 20px;
+                border-radius: 10px;
+                margin: 15px auto 5px;
+                display: block;
+                width: fit-content;
+                box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+                border: 2px solid #c7d2fe;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <div class="brand" aria-hidden="true">S</div>
+            <div>
+                <h1 class="title">Materi Statistika</h1>
+                <div class="subtitle">Penjelasan ringkas dengan contoh langkah demi langkah</div>
+            </div>
+        </header>
+
+        <div class="panel">
+            <main>
+                <!-- Mean -->
+                <section class="card blue" aria-labelledby="mean-title">
+                    <div class="icon" aria-hidden="true">📘</div>
+                    <h2 id="mean-title">1. Mean (Rata-rata)</h2>
+                    <p class="explain">
+                        Mean adalah jumlah seluruh data dibagi banyak data.
+                    </p>
+                    <div><b>Rumus Mean data Tunggal :</b></div>
+                    <div class="formula">
+                        Mean = Σx / n
+                    </div>
+
+                    <div class="rumus-info">
+                        <ul>
+                            <li>Σx = jumlah seluruh data</li>
+                            <li>n = banyaknya data</li>
+                            <li>x = nilai setiap data</li>
+                        </ul>
+                    </div>
+                    <!-- Mean Data Tunggal -->
+
+                    <div class="steps" aria-live="polite">
+                        <div><b>Contoh : </b> </div>
+                        <div><b>Disajikan</b> : Nilai data = 6, 7, 8, 9, 10</div>
+                        <div><b>Ditanya</b> : Mean dari data di atas?</div>
+                        <div><b>Diketahui</b> </div>
+                        <div>Hitung Σx = 6 + 7 + 8 + 9 + 10 = 40</div>
+                        <div> n (banyak data)= 5 </div>
+                        <div style="margin-top:8px"><b>Penyelesaian</b> :</div>
+                        <div>Mean = Σx / n</div>
+                        <div>Mean = 40 / 5 </div>
+                        <div>Mean = 8</div>
+
+                        <div style="margin-top:8px"><b>Jawab</b> : Mean = <strong>8</strong></div>
+                    </div>
+                    <!-- Mean Data Kelompok -->
+
+                    <div style="margin-top:12px">
+                        <table class="calc" aria-label="Perhitungan mean tunggal">
+                            <thead>
+                                <tr>
+                                    <th>Data (x)</th>
+                                    <th>Jumlah</th>
+                                    <th>n</th>
+                                    <th>Mean</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>6,7,8,9,10</td>
+                                    <td>Σx = 40</td>
+                                    <td>5</td>
+                                    <td>8</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div><b>Rumus Mean data Kelompok :</b></div>
+                    <div class="formula">
+                        Mean = Σ(fi × xi) / Σfi
+                    </div>
+
+                    <div class="rumus-info">
+                        <ul>
+                            <li>fi = frekuensi</li>
+                            <li>xi = nilai tengah kelas</li>
+                            <li>Σfi = jumlah frekuensi</li>
+                        </ul>
+                    </div>
+                    <div class="steps" aria-live="polite">
+                        <div><b>Contoh : </b> </div>
+                        <div> Tentukam Mean dari data kelompok di bawah ini</div>
+
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>Kelas</th>
+                                    <th>fi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>30–39</td>
+                                    <td>4</td>
+                                </tr>
+                                <tr>
+                                    <td>40–49</td>
+                                    <td>6</td>
+                                </tr>
+                                <tr>
+                                    <td>50–59</td>
+                                    <td>8</td>
+                                </tr>
+                                <tr>
+                                    <td>60–69</td>
+                                    <td>12</td>
+                                </tr>
+                                <tr>
+                                    <td>70–79</td>
+                                    <td>9</td>
+                                </tr>
+                                <tr>
+                                    <td>80–89</td>
+                                    <td>7</td>
+                                </tr>
+                                <tr>
+                                    <td>90–99</td>
+                                    <td>4</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>50</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <div style="margin-top:8px"><b>Ditanya</b> : Mean data kelompok?</div>
+                        <div style="margin-top:8px"><b>Penyelesaian</b> :</div>
+                        <div class="steps" aria-live="polite">
+                            <div><b>Diketahui</b> : Tabel kelas & frekuensi (contoh)</div>
+
+                            <table class="calc" style="margin-top:10px">
+                                <thead>
+                                    <tr>
+                                        <th>Kelas</th>
+                                        <th>fi</th>
+                                        <th>xi (tengah)</th>
+                                        <th>fi × xi</th>
+                                        <th>F (kumulatif)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>30–39</td>
+                                        <td>4</td>
+                                        <td>34.5</td>
+                                        <td>138.0</td>
+                                        <td>4</td>
+                                    </tr>
+                                    <tr>
+                                        <td>40–49</td>
+                                        <td>6</td>
+                                        <td>44.5</td>
+                                        <td>267.0</td>
+                                        <td>10</td>
+                                    </tr>
+                                    <tr>
+                                        <td>50–59</td>
+                                        <td>8</td>
+                                        <td>54.5</td>
+                                        <td>436.0</td>
+                                        <td>18</td>
+                                    </tr>
+                                    <tr>
+                                        <td>60–69</td>
+                                        <td>12</td>
+                                        <td>64.5</td>
+                                        <td>774.0</td>
+                                        <td>30</td>
+                                    </tr>
+                                    <tr>
+                                        <td>70–79</td>
+                                        <td>9</td>
+                                        <td>74.5</td>
+                                        <td>670.5</td>
+                                        <td>39</td>
+                                    </tr>
+                                    <tr>
+                                        <td>80–89</td>
+                                        <td>7</td>
+                                        <td>84.5</td>
+                                        <td>591.5</td>
+                                        <td>46</td>
+                                    </tr>
+                                    <tr>
+                                        <td>90–99</td>
+                                        <td>4</td>
+                                        <td>94.5</td>
+                                        <td>378.0</td>
+                                        <td>50</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Total</th>
+                                        <th>50</th>
+                                        <th></th>
+                                        <th>3255.0</th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+                            <div style="margin-top:8px"><b>Ditanya</b> : Mean data kelompok?</div>
+                            <div style="margin-top:8px"><b>Penyelesaian</b> :</div>
+                            <div>Hitung Σ(fi × xi) = 3255.0</div>
+                            <div>Hitung Σfi = 50</div>
+                            <div style="margin-top:8px"><b>Penyelesaian</b> :</div>
+                            <div>Mean = Σ(fi × xi) / Σfi</div>
+                            <div>Mean = 3255.0 / 50</div>
+                            <div>Mean = 65.10</div>
+                            <div style="margin-top:8px"><b>Jawab</b> : Mean ≈ <strong>65.10</strong></div>
+                        </div>
+                    </div>
+
+
+                </section>
+
+
+                <!-- Median -->
+                <section class="card purple" aria-labelledby="median">
+                    <div class="icon" aria-hidden="true">📏</div>
+                    <h2 id="median">2. Median </h2>
+                    <p class="explain">
+                        Median atau nilai tengah adalah pemusatan data yang membagi suatu data menjadi setengah (50%)
+                        data terkecil dan terbesarnya. Median adalah bilangan sentral dari suatu kumpulan dalam ukuran
+                        pemusatan data. Median data tunggal cukup dicari dengan cara mengurutkan data dari yang terkecil
+                        ke yang terbesar atau menggunakan rumus di bawah ini.
+                    </p>
+                    <div><b>Rumus Median data Tunggal :</b></div>
+                    <div class="formula">
+                        Median = (n + 1) / 2
+                    </div>
+
+                    <div class="rumus-info">
+                        <ul>
+                            <li>n = banyaknya data</li>
+                        </ul>
+                    </div>
+
+                    <div class="steps">
+                        <div><b>Contoh : </b> </div>
+                        <div>Di acara donor darah, beberapa pendonor mencatat berat badan mereka: 55,
+                            75, 60, 65, 70, 80, 85, dan 90 kg. Tentukan nilai median!</div>
+                        <div><b>Ditanya</b> : Median dari data di atas?</div>
+                        <div><b>Diketahui</b> </div>
+                        <div>n = 8 data</div>
+                        <div style="margin-top:8px"><b>Penyelesaian</b> :</div>
+                        <div>Median = (n+1)/2</div>
+                        <div>Median = (8+1)/2 </div>
+                        <div>Median = 9/2</div>
+                        <div>Median = 4,5</div>
+
+                        <div style="margin-top:8px">Jawab Jadi, median adalah rata-rata data
+                            urutan ke-4 dan ke-5 (setelah diurutkan: 55, 60, 65, 70, 75, 80, 85, 90), yakni (70 +
+                            75) / 2 = 72,5 kg.
+                        </div>
+                    </div>
+
+                    <!-- Media n data Kelompok -->
+                    <div><b> Rumus Median data Kelompok:</b></div>
+                    <div class="formula">
+                        Median = Tb + p ((½n - F) / f)
+                    </div>
+
+                    <div class="rumus-info">
+                        <ul>
+                            <li>Tb = Tepi bawah kelas median, yaitu kelas interval yang memuat median</li>
+                            <li>p = Panjang kelas </li>
+                            <li>n = Ukuran sampel atau banyak data</li>
+                            <li>F = Jumlah semua frekuensi dengan tanda
+                                kelas lebih kecil dari tanda kelas median</li>
+                            <li>f = Frekuensi kelas median</li>
+                        </ul>
+                    </div>
+                    <div class="steps" aria-live="polite">
+                        <div><b>Contoh : </b> </div>
+                        <div> Tentukam Median dari data kelompok di bawah ini</div>
+
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>Kelas</th>
+                                    <th>fi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>31–40</td>
+                                    <td>3</td>
+                                </tr>
+                                <tr>
+                                    <td>41–50</td>
+                                    <td>5</td>
+                                </tr>
+                                <tr>
+                                    <td>51–60</td>
+                                    <td>10</td>
+                                </tr>
+                                <tr>
+                                    <td>61–70</td>
+                                    <td>11</td>
+                                </tr>
+                                <tr>
+                                    <td>71–80</td>
+                                    <td>8</td>
+                                </tr>
+                                <tr>
+                                    <td>81–90</td>
+                                    <td>3</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>40</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <div style="margin-top:8px"><b>Ditanya</b> : Median data kelompok?</div>
+                        <div style="margin-top:8px"><b>Penyelesaian</b> :</div>
+                        <div class="steps" aria-live="polite">
+                            <div style="margin-top:8px"><b>Penyelesaian</b> :</div>
+                            <div><b>Diketahui :</b></div>
+                            <div>ΣF/2 = 40/2 = 20 </div>
+                            <div>Jadi, nilai frekuensi ke-20 letak kelas mediannya, yakni di nilai 61-70.</div>
+                            <div>Kelas Median 61-70</div>
+                            <div>Tb = 61-0.5 = 60.5</div>
+                            <div>p = 10</div>
+                            <div>n = 40</div>
+                            <div>F= 3+5+10 = 18</div>
+                            <div>f = 11</div>
+                            <div style="margin-top:8px"><b>Penyelesaian</b> :</div>
+                            <div>Median = Tb + p ((½n - F) / f)</div>
+                            <div>Median = 60.5 + 10 ((½40 - 18)/11) </div>
+                            <div>Median = 60.5 + 10 ((20 - 18)/11) </div>
+                            <div>Median = 60.5 + 10 (2/11) </div>
+                            <div>Median = 60.5 + 1.818</div>
+                            <div>Median = 62.318</div>
+                            <div style="margin-top:8px"><b>Jawab</b> : Median ≈ <strong>62.318</strong></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Modus -->
+                <section class="card orange" aria-labelledby="modus">
+                    <div class="icon" aria-hidden="true">🎯</div>
+                    <h2 id="modus">3. Modus</h2>
+                    <p class="explain">
+                        Modus adalah nilai yang paling sering muncul dalam suatu data statistika. Modus juga merupakan
+                        nilai mayoritas atau nilai dengan frekuensi paling tinggi. Modus dapat digunakan untuk
+                        menentukan sampel dari suatu populasi dalam statistika. Modus data tunggal dapat dicari dengan
+                        melihat angka yang paling banyak muncul, sedangkan modus pada data kelompok dapat dicari dengan
+                        rumus sebagai berikut:
+                    </p>
+                    <div class="steps">
+                        <div><b>Contoh</b></div>
+                        <div>Nandi mendapatkan nilai ulangan harian semester untuk pelajaran Fisika sebagai berikut:
+                            7,1; 6,2; 7,1; 8,4; 8,9; 8,9; 8,7; 8,9. Dari data tersebut, temukan modus berdasarkan nilai
+                            Nandi.</div>
+                        <div style="margin-top:8px"><b>Ditanya</b> : Modus?</div>
+                        <div style="margin-top:8px"><b>Penyelesaian</b> :</div>
+                        <div><b>diketahui : </b> data 7,1; 6,2; 7,1; 8,4; 8,9; 8,9; 8,7; 8,9. </div>
+                        <div>Berdasarkan data nilai Nandi, nilai yang paling sering muncul adalah nilai 8,9 sebanyak 3
+                            kali dan 7,1 sebanyak 2 kali.
+                            Oleh karena itu, modusnya nilai 8,9.</div>
+                        <div style="margin-top:8px"><b>Jawab</b> : Modus ≈ <strong>8.9</strong></div>
+                    </div>
+                    <!-- Rumus data Kelompok -->
+                    <div><b> Rumus Modus data Kelompok:</b></div>
+                    <div class="formula">
+                        Modus = L + (d1 / (d1 + d2)) × p
+                    </div>
+
+                    <div class="rumus-info">
+                        <ul>
+                            <li>L = Tepi bawah kelas modus </li>
+                            <li>d1 = Selisih frekuensi kelas modus dan frekuensi kelas sebelumnya</li>
+                            <li>d2 = Selisih frekuensi kelas modus dan frekuensi kelas setelahnya</li>
+                            <li>p = Interval kelas atau panjang kelas</li>
+                        </ul>
+                    </div>
+                    <div class="steps">
+                        Di kelas 11 IPA 4, jumlah siswanya sebanyak 40 siswa. Temukan modus dari data nilai ulangan IPA
+                        untuk kelas 11 IPA 4 di bawah ini:
+
+                        Nilai 70 sampai 79 : Sebanyak 10 siswa
+                        Nilai 80 sampai 89 : Sebanyak 15 siswa
+                        Nilai 90 sampai 99 : Sebanyak 9 siswa
+                        Nilai 100 : Sebanyak 6 siswa
+                        <div style="margin-top:8px"><b>Ditanya</b> : Modus?</div>
+                        <div><b>diketahui : </b> </div>
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>Nilai</th>
+                                    <th>Banyak Siswa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>70-79</td>
+                                    <td>10</td>
+                                </tr>
+                                <tr>
+                                    <td>80-89</td>
+                                    <td>15</td>
+                                </tr>
+                                <tr>
+                                    <td>90-99</td>
+                                    <td>9</td>
+                                </tr>
+                                <tr>
+                                    <td>100</td>
+                                    <td>6</td>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>40</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div>Nilai yang paling banyak keluar adalah nilai 80 sampai 89 sebanyak 15 siswa.</div>
+                        <div>L = 80-0.5 = 79.5</div>
+                        <div>d1 = 15 - 10 = 5</div>
+                        <div>d2 = 15 - 9 = 6</div>
+                        <div>p = 9</div>
+                        <div style="margin-top:8px"><b>Penyelesaian</b> :</div>
+                        <div>Modus = L + (d1 / (d1 + d2)) × p</div>
+                        <div>Modus = 79.5 + (5 / (5 + 6)) × 9 </div>
+                        <div>Modus = 79.5 + (5 / 11) × 9 </div>
+                        <div>Modus = 79.5 + 4.09</div>
+                        <div>Modus = 83.59
+                            <div style="margin-top:8px"><b>Jawab</b> : Modus ≈ <strong>83.59</strong></div>
+                        </div>
+                </section>
+            </main>
+
+            <aside class="sidebar" aria-label="Informasi pengguna">
+                <div class="user-info">
+                    <div class="avatar" id="avatar">A</div>
+                    <div class="user-text">
+                        <div id="name">ana</div>
+                        <div class="meta" id="when">Masuk: 10/31/2025, 11:54:53 AM</div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <div class="icon-buttons">
+                        <button class="icon-btn" id="btnBack" title="Dashboard" aria-label="Dashboard">
+                            <!-- Home icon (inline SVG) -->
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M3 11.5V21a1 1 0 0 0 1 1h5v-7h4v7h5a1 1 0 0 0 1-1v-9.5l-8-6-8 6z" />
+                            </svg>
+                        </button>
+                        <button class="icon-btn" id="btnLogout" title="Keluar" aria-label="Keluar">
+                            <!-- Logout icon (inline SVG) -->
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path
+                                    d="M16 13v-2H7V8l-5 4 5 4v-3zM20 3h-8v2h8v14h-8v2h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <footer>© 2025 StatEdu - Platform Pembelajaran Statistika</footer>
+    </div>
+
+    <script>
+        (function init() {
+            const raw = localStorage.getItem('app_user');
+            if (!raw) return;
+            try {
+                const u = JSON.parse(raw);
+                if (u && u.name) {
+                    document.getElementById('name').textContent = u.name;
+                    document.getElementById('when').textContent = `Masuk: ${new Date(u.loggedAt).toLocaleString()}`;
+                    document.getElementById('avatar').textContent = (u.name[0] || 'S').toUpperCase();
+                }
+            } catch (e) {
+                console.warn(e)
+            }
+        })();
+
+        document.getElementById('btnBack').addEventListener('click', () => location.href = 'student-dashboard.html');
+        document.getElementById('btnLogout').addEventListener('click', () => {
+            localStorage.removeItem('app_user');
+            location.href = 'index.html';
+        });
+        document.getElementById('btnAll').addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StatEdu - Dashboard Siswa</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f8ff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .dashboard {
+            text-align: center;
+            width: 95%;
+            max-width: 900px;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #1a1a1a;
+            font-size: clamp(18px, 4vw, 26px);
+            margin-bottom: 5px;
+        }
+
+        .sub {
+            color: #6c757d;
+            margin-bottom: 25px;
+            font-size: clamp(12px, 3vw, 16px);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            row-gap: 4px;
+            column-gap: 4px;
+            align-items: stretch;
+            justify-items: stretch;
+            padding: 16px;
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            width: 100%;
+            padding: clamp(8px, 2vw, 18px);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+        }
+
+        .icon {
+            font-size: clamp(18px, 5vw, 30px);
+            margin-bottom: 6px;
+        }
+
+        h3 {
+            margin: 4px 0;
+            color: #1a1a1a;
+            font-size: clamp(12px, 3vw, 16px);
+        }
+
+        p {
+            font-size: clamp(10px, 2.5vw, 14px);
+            color: #555;
+        }
+
+        .blue {
+            border-top: 5px solid #2f6bff;
+        }
+
+        .green {
+            border-top: 5px solid #2ecc71;
+        }
+
+        .purple {
+            border-top: 5px solid #9b59b6;
+        }
+
+        .orange {
+            border-top: 5px solid #f39c12;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .action-bar {
+            margin-top: 18px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: 0;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn.primary {
+            background: #2f6bff;
+            color: #fff;
+        }
+
+        .btn.ghost {
+            background: transparent;
+            color: #2f6bff;
+            border: 1px solid rgba(47, 107, 255, 0.12);
+        }
+
+        @media (max-width: 480px) {
+            .menu-item {
+                padding: 8px;
+                border-radius: 10px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="dashboard">
+        <h1 id="greet">Selamat Datang 👋</h1>
+        <p class="sub" id="sub">Pilih menu untuk melanjutkan</p>
+        <div class="menu-grid" aria-live="polite">
+            <a href="materi.html" class="menu-item blue" role="button">
+                <div class="icon">📘</div>
+                <h3>Materi</h3>
+                <p>Akses materi pembelajaran</p>
+            </a>
+            <a href="latihan-soal.html" class="menu-item green" role="button">
+                <div class="icon">✏️</div>
+                <h3>Latihan Soal</h3>
+                <p>Uji pemahamanmu di sini</p>
+            </a>
+            <a href="kalkulator.html" class="menu-item purple" role="button">
+                <div class="icon">📊</div>
+                <h3>Kalkulator Statistik</h3>
+                <p>Hitung data dengan cepat</p>
+            </a>
+            <a href="game.html" class="menu-item orange" role="button">
+                <div class="icon">🎮</div>
+                <h3>Game</h3>
+                <p>Belajar sambil bermain</p>
+            </a>
+        </div>
+        <div class="action-bar">
+            <button id="btnLogout" class="btn primary">Keluar</button>
+        </div>
+        <footer>© 2025 StatEdu-Platform Pembelajaran Statistika</footer>
+    </div>
+    <script>
+        (function () {
+            // Mock server guru lokal
+            const teacherDashboard = {
+                students: [],
+                addStudent(s) {
+                    this.students.push(s);
+                    console.log('Siswa login:', s);
+                    this.render();
+                },
+                updateStudent(s) {
+                    const idx = this.students.findIndex(x => x.sessionId === s.sessionId);
+                    if (idx === -1) this.addStudent(s);
+                    else {
+                        this.students[idx] = {
+                            ...this.students[idx],
+                            ...s
+                        };
+                        this.render();
+                    }
+                },
+                render() {
+                    console.clear();
+                    console.log('=== Dashboard Guru ===');
+                    this.students.forEach(s => console.log(`${s.name} [${s.kelas}] - ${s.status}`));
+                }
+            };
+
+            // Login siswa
+            let raw = localStorage.getItem('app_user');
+            if (!raw) {
+                const name = prompt('Masukkan nama:');
+                if (!name) {
+                    alert('Nama wajib!');
+                    location.reload();
+                    return;
+                }
+                const kelas = prompt('Kelas (opsional)') || '';
+                const sessionId = 's_' + Math.random().toString(36).substr(2, 9);
+                const user = {
+                    name,
+                    kelas,
+                    sessionId,
+                    role: 'siswa',
+                    loggedAt: Date.now(),
+                    status: 'online'
+                };
+                localStorage.setItem('app_user', JSON.stringify(user));
+                raw = JSON.stringify(user);
+            }
+
+            const user = JSON.parse(raw);
+            document.getElementById('greet').textContent = `Halo, ${user.name}!`;
+            document.getElementById('sub').textContent =
+                `Anda masuk sebagai Siswa — ${new Date(user.loggedAt).toLocaleString()}`;
+
+            // koneksi mock real-time (demo)
+            function sendStatus() {
+                user.lastActive = Date.now();
+                teacherDashboard.updateStudent({
+                    ...user
+                });
+            }
+            sendStatus();
+            setInterval(sendStatus, 10000); // update status tiap 10 detik
+
+            document.getElementById('btnLogout').addEventListener('click', () => {
+                localStorage.removeItem('app_user'); // hapus data login
+                location.href = 'index.html'; // pindah ke halaman login
+            });
+
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1371 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kalkulator Statistik — Cerdas</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.4.1/html-docx.min.js"></script>
+  <style>
+    :root {
+      --bg: #e9eff7;
+      --card: #ffffff;
+      --accent: #2463eb;
+      --accent-light: #e2ebff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* Back button inline style to match latihan-soal icon */
+    #back-btn {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      background: var(--card);
+      border-radius: 50%;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+    }
+
+    #back-btn:hover {
+      background: var(--accent);
+    }
+
+    #back-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--accent);
+      transition: fill 0.2s ease;
+    }
+
+    #back-btn:hover svg {
+      fill: #ffffff;
+    }
+
+
+    .wrap {
+      width: 100%;
+      max-width: 960px;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header h1 {
+      font-size: 26px;
+      margin: 0;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+    }
+
+    header .small {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 8px 16px;
+      box-shadow: 0 4px 12px rgba(36, 99, 235, 0.3);
+    }
+
+    .controls label {
+      font-weight: 600;
+      color: var(--text);
+      min-width: 60px;
+    }
+
+    select {
+      font: inherit;
+      border-radius: 8px;
+      border: 2px solid var(--accent);
+      padding: 6px 10px;
+      outline: none;
+      transition: border-color 0.3s ease;
+      font-size: 14px;
+      color: var(--text);
+      min-height: 36px;
+      background: white;
+      cursor: pointer;
+    }
+
+    select:focus {
+      border-color: #1e50c2;
+      box-shadow: 0 0 5px var(--accent-light);
+    }
+
+    button.primary {
+      cursor: pointer;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(36, 99, 235, 0.5);
+      padding: 10px 20px;
+      background-color: var(--accent);
+      color: white;
+      user-select: none;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    button.primary:hover,
+    button.primary:focus {
+      background-color: #1e50c2;
+      box-shadow: 0 8px 20px rgba(30, 79, 207, 0.7);
+      outline: none;
+    }
+
+    button.ghost {
+      cursor: pointer;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 8px 16px;
+      background-color: transparent;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      user-select: none;
+      box-shadow: none;
+      transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    button.ghost:hover,
+    button.ghost:focus {
+      background-color: var(--accent);
+      color: white;
+      box-shadow: 0 5px 15px rgba(36, 99, 235, 0.5);
+      outline: none;
+    }
+
+    @media (max-width: 480px) {
+      .controls {
+        justify-content: center;
+        gap: 10px;
+      }
+
+      select,
+      button.primary,
+      button.ghost {
+        flex: 1 1 100%;
+        max-width: 100%;
+        text-align: center;
+      }
+
+      label {
+        flex-basis: 100%;
+        text-align: center;
+        margin-bottom: 6px;
+      }
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 16px;
+    }
+
+    .result {
+      background: linear-gradient(180deg, #f9fbff, #f0f5ff);
+      border-left: 5px solid var(--accent);
+      padding: 16px;
+      border-radius: var(--radius);
+    }
+
+    dl {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px 10px;
+      font-size: 15px;
+    }
+
+    dl div:nth-child(odd) {
+      color: var(--muted);
+    }
+
+    dl div:nth-child(even) {
+      font-weight: 600;
+    }
+
+    .steps {
+      background: #f8faff;
+      border-radius: var(--radius);
+      padding: 14px;
+      border-left: 4px solid var(--accent-light);
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.03);
+      margin-top: 12px;
+      overflow-y: auto;
+      max-height: 380px;
+    }
+
+    table.calc {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    table.calc th,
+    table.calc td {
+      border: 1px solid #bbb;
+      padding: 6px 8px;
+      text-align: center;
+    }
+
+    table.calc th {
+      background: #eef5ff;
+      color: var(--accent);
+    }
+
+    /* Smaller screens */
+    @media (max-width: 880px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    #panel-group {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #panel-group table {
+      width: 100%;
+      min-width: 380px;
+      border-collapse: collapse;
+      text-align: center;
+    }
+
+    #panel-group th,
+    #panel-group td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #e2e8f0;
+      white-space: nowrap;
+    }
+
+    #panel-group th {
+      background: #f3f6ff;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    #panel-group td input {
+      width: 80px;
+      padding: 6px;
+      text-align: center;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+    }
+
+    @media (max-width: 600px) {
+      #panel-group table {
+        display: block;
+        overflow-x: auto;
+        min-width: unset;
+      }
+
+      #panel-group th,
+      #panel-group td {
+        font-size: 13px;
+        padding: 6px;
+      }
+
+      #panel-group td input {
+        width: 60px;
+        font-size: 13px;
+      }
+
+      .calc-container,
+      .card {
+        padding: 12px;
+      }
+    }
+
+    /* ✨ Tombol Download Word lebih cantik */
+    #downloadWord {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    #downloadWord:hover {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9rem;
+      color: #888;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header id="judul-aplikasi">
+      <div class="title-row">
+        <a href="student-dashboard.html" id="back-btn" title="Kembali ke halaman student"
+          aria-label="Kembali ke Dashboard">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+          </svg>
+        </a>
+        <h1>Kalkulator Statistik — Cerdas</h1>
+      </div>
+      <div class="small">
+        Hitung mean, median, modus, varians, standar deviasi, dan lainnya dengan mudah
+      </div>
+    </header>
+
+
+    <div class="card controls">
+      <label for="mode">Mode:</label>
+      <select id="mode" name="mode" aria-label="Pilih mode data">
+        <option value="single">Data Tunggal</option>
+        <option value="group" selected>Data Kelompok (Tabel)</option>
+      </select>
+      <button id="calc" class="primary">Hitung</button>
+      <button id="clear" class="ghost">Hapus</button>
+      <button id="show-steps" class="ghost">Langkah</button>
+      <button id="downloadWord" class="btn">Download Word</button>
+    </div>
+
+    <div class="grid">
+      <!-- 🧮 Bagian Data -->
+      <div id="data-section">
+        <!-- Data Tunggal -->
+        <div id="panel-single" class="card" style="display:none;">
+          <h3>Data Tunggal</h3>
+          <div class="small">Masukkan nilai dipisah koma (misal: 12, 15, 18, 20)</div>
+          <textarea id="single-input" rows="3" style="width:100%;margin-top:8px"></textarea>
+        </div>
+
+        <!-- Data Kelompok -->
+        <div id="panel-group" class="card">
+          <h3>Data Kelompok</h3>
+          <div class="small">Isi kelas (contoh: 10–19) dan frekuensi</div>
+          <div style="overflow:auto">
+            <table id="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Kelas</th>
+                  <th>fi</th>
+                  <th>xi</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="group-tbody"></tbody>
+            </table>
+          </div>
+          <div style="margin-top:8px;display:flex;gap:8px;">
+            <button id="add-row" class="ghost">Tambah Baris</button>
+            <button id="reset-table" class="ghost">Reset Contoh</button>
+          </div>
+        </div>
+
+        <!-- Langkah-langkah -->
+        <div id="steps-container">
+          <div id="steps-block" class="steps" style="display:none" aria-live="polite" aria-atomic="true">
+            <div id="steps-content"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 📊 Bagian Hasil -->
+      <div id="result-section">
+        <div id="result-card" class="card result" aria-live="polite" aria-atomic="true">
+          <h3 style="margin-top:0;">Hasil Ringkas</h3>
+          <dl id="out-dl">
+            <div>Mean (x̄):</div>
+            <div id="out-mean" tabindex="0">—</div>
+            <div>Median:</div>
+            <div id="out-median" tabindex="0">—</div>
+            <div>Modus:</div>
+            <div id="out-mode" tabindex="0">—</div>
+            <div>Range:</div>
+            <div id="out-range" tabindex="0">—</div>
+            <div>Q1:</div>
+            <div id="out-q1" tabindex="0">—</div>
+            <div>Q3:</div>
+            <div id="out-q3" tabindex="0">—</div>
+            <div>IQR:</div>
+            <div id="out-iqr" tabindex="0">—</div>
+            <div>SR:</div>
+            <div id="out-sr" tabindex="0">—</div>
+            <div>Varians:</div>
+            <div id="out-var" tabindex="0">—</div>
+            <div>Standar Deviasi:</div>
+            <div id="out-sd" tabindex="0">—</div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 StatEdu - Platform Pembelajaran Statistika
+  </footer>
+
+  <script>
+    // Utility selectors
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+    const out = id => $('#out-' + id);
+    // Utility math functions
+    function round(v) {
+      return (typeof v !== 'number' || isNaN(v)) ? '—' : Math.round((v + Number.EPSILON) * 100) / 100;
+    }
+
+    function sum(a) {
+      return a.reduce((x, y) => x + y, 0);
+    }
+
+    function parseList(raw) {
+      return raw.split(',').map(s => s.trim()).filter(s => s !== '').map(Number).filter(n => !isNaN(n));
+    }
+
+    function mean(arr) {
+      return sum(arr) / arr.length;
+    }
+
+    function medianSorted(sorted) {
+      const n = sorted.length;
+      if (!n) return NaN;
+      return (n % 2 === 1) ? sorted[(n - 1) / 2] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2;
+    }
+
+    function mode(arr) {
+      if (!arr.length) return null;
+      const freq = {};
+      arr.forEach(x => freq[x] = (freq[x] || 0) + 1);
+      const maxFreq = Math.max(...Object.values(freq));
+      const modes = Object.keys(freq).filter(k => freq[k] === maxFreq).map(Number);
+      if (modes.length === Object.keys(freq).length) return null;
+      return {
+        modes,
+        freq: maxFreq
+      };
+    }
+
+    function varPop(arr, m) {
+      return arr.reduce((a, x) => a + Math.pow(x - m, 2), 0) / arr.length;
+    }
+
+
+    // Parsing class range string to {a,b}
+    function parseClass(k) {
+      if (!k) return null;
+      const s = k.replace(/–/g, '-').replace(/\s/g, '');
+      const parts = s.split('-');
+      if (parts.length < 2) return null;
+      const a = Number(parts[0]),
+        b = Number(parts[1]);
+      if (isNaN(a) || isNaN(b)) return null;
+      return {
+        a,
+        b
+      };
+    }
+
+    // Quartile for data single (steps and value)
+    function stepHtmlQuartileSingle(sorted, n, k) {
+      const pos = (k / 4) * (n + 1);
+      const floorPos = Math.floor(pos);
+      let val;
+      if (pos < 1) val = sorted[0];
+      else if (pos > n) val = sorted[n - 1];
+      else if (pos === floorPos) val = sorted[floorPos - 1];
+      else val = sorted[floorPos - 1]; // Following your example, take floor position value
+
+      const details = `
+          <div>Q<sub>${k}</sub> = ${k}/4 (n+1)</div>
+          <div>Q<sub>${k}</sub> = ${k}/4 (${n}+1)</div>
+          <div>Q<sub>${k}</sub> = ${k}/4 (${n + 1})</div>
+          <div>Q<sub>${k}</sub> = ${pos.toFixed(2)} ${pos === floorPos ? `→ nilai ke-${floorPos} = <strong>${val}</strong>` : `→ nilai ke-${floorPos} = <strong>${val}</strong> (posisi tidak bulat, ambil nilai bawah)`}</div>
+        `;
+      return {
+        pos,
+        nilaiPos: val,
+        details
+      };
+    }
+
+    // Quartile for grouped data
+    function computeQuartilesGroup(data) {
+      const totalFi = sum(data.map(r => r.fi));
+      const cumF = [];
+      data.reduce((a, r, i) => cumF[i] = a + r.fi, 0);
+
+      function quartileAt(pos) {
+        let idx = cumF.findIndex(c => c >= pos);
+        if (idx === -1) idx = data.length - 1;
+        const Fprev = idx > 0 ? cumF[idx - 1] : 0;
+        const f = data[idx].fi;
+        const kelas = data[idx].kelas;
+        let L, p;
+        const bounds = parseClass(kelas);
+        if (bounds) {
+          L = bounds.a - 0.5;
+          p = bounds.b - bounds.a + 1;
+        } else {
+          const xis = data.map(d => d.xi).filter(x => !isNaN(x));
+          p = xis.length > 1 ? Math.abs(xis[1] - xis[0]) : 1;
+          L = data[idx].xi - p / 2;
+        }
+        const Q = L + ((pos - Fprev) / f) * p;
+        return {
+          pos,
+          idx,
+          Fprev,
+          f,
+          L,
+          p,
+          Q
+        };
+      }
+      return {
+        Q1: quartileAt(totalFi / 4),
+        Q2: quartileAt(totalFi / 2),
+        Q3: quartileAt((3 * totalFi) / 4),
+        totalFi,
+        cumF
+      };
+    }
+
+    function stepHtmlQuartileGroup(k, n, L, F, f, p) {
+      const pos = (k * n) / 4;
+      const Q = L + ((pos - F) / f) * p;
+      return `
+          <div>Q<sub>${k}</sub> = ${k}/4 (n+1)</div>
+          <div>Q<sub>${k}</sub> = ${k}/4 (${n}+1)</div>
+          <div><b>Rumus data kelompok:</b> Q<sub>k</sub> = L + ((k·n/4 − F) / f) × p</div>
+          <div>Posisi kuartil: ${pos.toFixed(2)} → kelas kuartil indeks ke-${(idx+1)}</div>
+          <div>L = ${L}</div>
+          <div>F = ${F}</div>
+          <div>f = ${f}</div>
+          <div>p = ${p}</div>
+          <div><b>Perhitungan:</b></div>
+          <div>Q<sub>${k}</sub> = ${L} + ((${pos.toFixed(2)} − ${F}) / ${f}) × ${p}</div>
+          <div><b>Hasil:</b> <strong>${round(Q)}</strong></div>
+        `;
+    }
+
+    // Langkah Simpangan Rata2 data tunggal
+    function stepsSRTunggal(data, xbar) {
+      const n = data.length;
+      const absDiff = data.map(x => Math.abs(x - xbar));
+      const sumAbsDiff = sum(absDiff);
+      let rows = absDiff.map((v, i) => `<tr><td>${data[i]}</td><td>${round(v)}</td></tr>`).join('');
+      return `
+        <section class="card">
+          <div class="icon orange">📐</div>
+          <h2>Simpangan Rata-rata</h2>
+          <div class="formula">SR = Σ|x − x̄| / n</div>
+          <div class="steps">
+            <div><b>Data:</b> ${data.join(', ')}</div>
+            <div><b>n = ${n}</b></div>
+            <div><b>Mean (x̄) = ${round(xbar)}</b></div>
+            <table class="calc" aria-label="Perhitungan simpangan rata-rata">
+              <thead><tr><th>x</th><th>|x − x̄|</th></tr></thead>
+              <tbody>${rows}</tbody>
+              <tfoot><tr><th>Total</th><th>${round(sumAbsDiff)}</th></tr></tfoot>
+            </table>
+            <div>SR = ${round(sumAbsDiff)} / ${n}</div>
+            <div>SR = <strong>${round(sumAbsDiff / n)}</strong></div>
+          </div>
+        </section>
+        `;
+    }
+
+    // Langkah Simpangan Rata2 data kelompok
+    function stepsSRKelompok(data, xbar, totalFi) {
+      let rows = '',
+        sumFAbsDiff = 0;
+      data.forEach(({
+        kelas,
+        fi,
+        xi
+      }) => {
+        const absDiff = Math.abs(xi - xbar);
+        const fAbsDiff = fi * absDiff;
+        sumFAbsDiff += fAbsDiff;
+        rows +=
+          `<tr><td>${kelas}</td><td>${fi}</td><td>${round(xi)}</td><td>${round(fi*xi)}</td><td>${round(absDiff)}</td><td>${round(fAbsDiff)}</td></tr>`;
+      });
+      return `
+        <section class="card">
+          <div class="icon orange">📐</div>
+          <h2>Simpangan Rata-rata</h2>
+          <div class="formula">SR = Σf|x − x̄| / n</div>
+          <div class="steps">
+            <table class="calc" aria-label="Perhitungan simpangan rata-rata data kelompok" >
+            <thead><tr><th>kelas</th><th>f</th><th>x</th><th>f·x</th><th>|x − x̄|</th><th>f·|x − x̄|</th></tr></thead>
+            <tbody>${rows}</tbody>
+            <tfoot><tr><th>Total</th><th>${totalFi}</th><th></th><th></th><th></th><th>${round(sumFAbsDiff)}</th></tr></tfoot>
+            </table>
+            <div>SR = ${round(sumFAbsDiff)} / ${totalFi}</div>
+            <div>SR = <strong>${round(sumFAbsDiff/totalFi)}</strong></div>
+          </div>
+        </section>
+        `;
+    }
+
+    // Langkah Varians data tunggal
+    function stepsVarTunggal(data, xbar) {
+      const n = data.length;
+      const diffSqr = data.map(x => Math.pow(x - xbar, 2));
+      const sumDiffSqr = sum(diffSqr);
+      let rows = diffSqr.map((v, i) =>
+        `<tr><td>${data[i]}</td><td>${round(data[i]-xbar)}</td><td>${round(v)}</td></tr>`).join('');
+      return `
+        <section class="card">
+          <div class="icon green">📗</div>
+          <h2>Ragam (Varians)</h2>
+          <div class="formula">S² = Σ(x − x̄)² / n</div>
+          <div class="steps">
+            <div><b>Data:</b> ${data.join(', ')}</div>
+            <div><b>n = ${n}</b></div>
+            <div><b>Mean (x̄) = ${round(xbar)}</b></div>
+            <table class="calc" aria-label="Perhitungan Varians">
+              <thead><tr><th>x</th><th>x − x̄</th><th>(x − x̄)²</th></tr></thead>
+              <tbody>${rows}</tbody>
+              <tfoot><tr><th>Total</th><th></th><th>${round(sumDiffSqr)}</th></tr></tfoot>
+            </table>
+            <div>S² = ${round(sumDiffSqr)} / ${n}</div>
+            <div>S² = <strong>${round(sumDiffSqr / n)}</strong></div>
+          </div>
+        </section>
+        `;
+    }
+
+    // Langkah Varians data kelompok
+    function stepsVarKelompok(data, xbar, totalFi) {
+      let rows = '',
+        sumFDiffSqr = 0;
+      data.forEach(({
+        kelas,
+        fi,
+        xi
+      }) => {
+        const diff = xi - xbar;
+        const diffSqr = diff * diff;
+        const fDiffSqr = fi * diffSqr;
+        sumFDiffSqr += fDiffSqr;
+        rows +=
+          `<tr><td>${kelas}</td><td>${fi}</td><td>${round(xi)}</td><td>${round(fi*xi)}</td><td>${round(diff)}</td><td>${round(diffSqr)}</td><td>${round(fDiffSqr)}</td></tr>`;
+      });
+      return `
+        <section class="card">
+          <div class="icon green">📗</div>
+          <h2>Ragam (Varians)</h2>
+          <div class="formula">S² = Σf(x − x̄)² / n</div>
+          <div class="steps">
+            <table class="calc" aria-label="Perhitungan Varians data kelompok">
+            <thead><tr><th>kelas</th><th>f</th><th>x</th><th>f·x</th><th>x-x̄</th><th>(x-x̄)²</th><th>f(x-x̄)²</th></tr></thead>
+            <tbody>${rows}</tbody>
+            <tfoot><tr><th>Total</th><th>${totalFi}</th><th></th><th></th><th></th><th></th><th>${round(sumFDiffSqr)}</th></tr></tfoot>
+            </table>
+            <div>S² = ${round(sumFDiffSqr)} / ${totalFi}</div>
+            <div>S² = <strong>${round(sumFDiffSqr/totalFi)}</strong></div>
+          </div>
+        </section>
+        `;
+    }
+
+    // Langkah Standar Deviasi data tunggal
+    function stepsSDTunggal(data, xbar) {
+      const n = data.length;
+      const diffSqr = data.map(x => Math.pow(x - xbar, 2));
+      const sumDiffSqr = sum(diffSqr);
+      const varians = sumDiffSqr / n;
+      const sd = Math.sqrt(varians);
+      let rows = diffSqr.map((v, i) =>
+        `<tr><td>${data[i]}</td><td>${round(data[i] - xbar)}</td><td>${round(v)}</td></tr>`).join('');
+      return `
+        <section class="card">
+          <div class="icon cyan">📈</div>
+          <h2>Standar Deviasi</h2>
+          <div class="formula">S = √(Σ(x − x̄)² / n)</div>
+          <div class="steps">
+            <div><b>Data:</b> ${data.join(', ')}</div>
+            <div><b>n = ${n}</b></div>
+            <div><b>Mean (x̄) = ${round(xbar)}</b></div>
+            <table class="calc" aria-label="Perhitungan Standar Deviasi">
+              <thead><tr><th>x</th><th>x − x̄</th><th>(x − x̄)²</th></tr></thead>
+              <tbody>${rows}</tbody>
+              <tfoot><tr><th>Total</th><th></th><th>${round(sumDiffSqr)}</th></tr></tfoot>
+            </table>
+            <div>S = √(${round(sumDiffSqr)} / ${n})</div>
+            <div>S = √${round(varians)}</div>
+            <div>S = <strong>${round(sd)}</strong></div>
+          </div>
+        </section>
+        `;
+    }
+
+    // Langkah Standar Deviasi data kelompok
+    function stepsSDKelompok(data, xbar, totalFi) {
+      let rows = '',
+        sumFDiffSqr = 0;
+      data.forEach(({
+        kelas,
+        fi,
+        xi
+      }) => {
+        const diff = xi - xbar;
+        const diffSqr = diff * diff;
+        const fDiffSqr = fi * diffSqr;
+        sumFDiffSqr += fDiffSqr;
+        rows +=
+          `<tr><td>${kelas}</td><td>${fi}</td><td>${round(xi)}</td><td>${round(fi*xi)}</td><td>${round(diff)}</td><td>${round(diffSqr)}</td><td>${round(fDiffSqr)}</td></tr>`;
+      });
+      const varians = sumFDiffSqr / totalFi;
+      const sd = Math.sqrt(varians);
+      return `
+        <section class="card">
+          <div class="icon cyan">📈</div>
+          <h2>Standar Deviasi</h2>
+          <div class="formula">S = √(Σf(x − x̄)² / n)</div>
+          <div class="steps">
+            <table class="calc" aria-label="Perhitungan Standar Deviasi Kelompok">
+            <thead><tr><th>kelas</th><th>f</th><th>x</th><th>f·x</th><th>x-x̄</th><th>(x-x̄)²</th><th>f(x-x̄)²</th></tr></thead>
+            <tbody>${rows}</tbody>
+            <tfoot><tr><th>Total</th><th>${totalFi}</th><th></th><th></th><th></th><th></th><th>${round(sumFDiffSqr)}</th></tr></tfoot>
+            </table>
+            <div>S = √(${round(sumFDiffSqr)} / ${totalFi})</div>
+            <div>S = √${round(varians)}</div>
+            <div>S = <strong>${round(sd)}</strong></div>
+          </div>
+        </section>
+        `;
+    }
+
+    // Rentang Data Tunggal
+    function stepsRentangTunggal(data) {
+      const max = Math.max(...data);
+      const min = Math.min(...data);
+      return `
+        <section class="card">
+          <div class="icon blue">📏</div>
+          <h2>Rentang / Jangkauan</h2>
+          <div class="formula">R = X<sub>maks</sub> − X<sub>min</sub></div>
+          <div class="steps">
+            <div><b>Data:</b> ${data.join(', ')}</div>
+            <div>Nilai terbesar (X<sub>maks</sub>) = ${max}</div>
+            <div>Nilai terkecil (X<sub>min</sub>) = ${min}</div>
+            <div>R = ${max} - ${min}</div>
+            <div><b>Jawab:</b> Rentang = <strong>${max - min}</strong></div>
+          </div>
+        </section>
+        `;
+    }
+    // Rentang Data Kelompok
+    function stepsRentangKelompok(data) {
+      const firstBounds = parseClass(data[0].kelas || '');
+      const lastBounds = parseClass(data[data.length - 1].kelas || '');
+      let min, max;
+      if (firstBounds && lastBounds) {
+        min = firstBounds.a;
+        max = lastBounds.b;
+      } else {
+        const xis = data.map(d => d.xi).filter(x => !isNaN(x));
+        min = Math.min(...xis);
+        max = Math.max(...xis);
+      }
+      return `
+        <section class="card">
+          <div class="icon blue">📏</div>
+          <h2>Rentang / Jangkauan</h2>
+          <div class="formula">R = X<sub>maks</sub> − X<sub>min</sub></div>
+          <div class="steps">
+            <div>Nilai terbesar (X<sub>maks</sub>) = ${max}</div>
+            <div>Nilai terkecil (X<sub>min</sub>) = ${min}</div>
+            <div>R = ${max} - ${min}</div>
+            <div><b>Jawab:</b> Rentang = <strong>${max - min}</strong></div>
+          </div>
+        </section>
+        `;
+    }
+
+
+    // DOM refs
+    const modeEl = $('#mode'),
+      panelSingle = $('#panel-single'),
+      panelGroup = $('#panel-group'),
+      calcBtn = $('#calc'),
+      clearBtn = $('#clear'),
+      stepsBtn = $('#show-steps'),
+      stepsBlock = $('#steps-block'),
+      stepsContent = $('#steps-content'),
+      groupTbody = $('#group-tbody');
+
+    // Toggle mode input panels
+    modeEl.addEventListener('change', () => {
+      const m = modeEl.value;
+      panelSingle.style.display = m === 'single' ? 'block' : 'none';
+      panelGroup.style.display = m === 'group' ? 'block' : 'none';
+      stepsBlock.style.display = 'none';
+      stepsContent.innerHTML = '';
+      ['mean', 'median', 'mode', 'range', 'q1', 'q3', 'iqr', 'sr', 'var', 'sd'].forEach(id => out(id)
+        .textContent = '—');
+    });
+
+    // Group Table Helpers
+    function addRow(k = '', f = 0, xi = '') {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+            <td class="idx"></td>
+            <td><input class="kelas" value="${k}" placeholder="ex: 10-19" /></td>
+            <td><input class="fi" type="number" min="0" value="${f}" /></td>
+            <td><input class="xi" value="${xi}" placeholder="otomatis" /></td>
+            <td><button class="del ghost">Hapus</button></td>
+        `;
+      groupTbody.appendChild(tr);
+      refreshIdx();
+
+      const kelasInput = tr.querySelector('.kelas');
+      const xiInput = tr.querySelector('.xi');
+
+      if (!xiInput.value.trim()) xiInput.dataset.autoset = '1';
+      else xiInput.dataset.autoset = '0';
+
+      kelasInput.addEventListener('input', () => {
+        const b = parseClass(kelasInput.value.trim());
+        if (b) {
+          const mid = (b.a + b.b) / 2;
+          if (xiInput.dataset.autoset !== '0' || xiInput.value.trim() === '') {
+            xiInput.value = round(mid);
+            xiInput.dataset.autoset = '1';
+          }
+        }
+      });
+
+      xiInput.addEventListener('input', () => {
+        if (xiInput.value.trim() !== '') xiInput.dataset.autoset = '0';
+      });
+
+      tr.querySelector('.del').addEventListener('click', () => {
+        tr.remove();
+        refreshIdx();
+      });
+    }
+
+    function refreshIdx() {
+      Array.from(groupTbody.children).forEach((tr, i) => tr.querySelector('.idx').textContent = i + 1);
+    }
+    $('#add-row').addEventListener('click', () => addRow('', '', ''));
+    $('#reset-table').addEventListener('click', () => {
+      groupTbody.innerHTML = '';
+      addRow('10-19', 3, '');
+      addRow('20-29', 5, '');
+      addRow('30-39', 2, '');
+      refreshIdx();
+      Array.from(groupTbody.querySelectorAll('.kelas')).forEach(k => k.dispatchEvent(new Event('input')));
+    });
+
+    // Calculate main event
+    calcBtn.addEventListener('click', () => {
+      stepsBlock.style.display = 'none';
+      stepsContent.innerHTML = '';
+
+      if (modeEl.value === 'single') {
+        const raw = $('#single-input').value;
+        const data = parseList(raw);
+        if (!data.length) {
+          alert('Masukkan minimal satu nilai.');
+          return;
+        }
+        const sorted = [...data].sort((a, b) => a - b);
+        const n = sorted.length;
+        const xbar = mean(data);
+        const med = medianSorted(sorted);
+        const md = mode(data);
+        const rangeVal = Math.max(...data) - Math.min(...data);
+        const sr = data.reduce((a, x) => a + Math.abs(x - xbar), 0) / n;
+        const varp = varPop(data, xbar);
+        const sd = Math.sqrt(varp);
+
+        // Kuartil
+        const q1 = stepHtmlQuartileSingle(sorted, n, 1);
+        const q2 = stepHtmlQuartileSingle(sorted, n, 2);
+        const q3 = stepHtmlQuartileSingle(sorted, n, 3);
+        const iqrVal = q3.nilaiPos - q1.nilaiPos;
+
+        // Output ringkas
+        out('mean').textContent = round(xbar);
+        out('median').textContent = round(med);
+        out('mode').textContent = md ? `${md.modes.join(', ')} (f=${md.freq})` : 'Tidak ada modus';
+        out('range').textContent = round(rangeVal);
+        out('q1').textContent = round(q1.nilaiPos);
+        out('q3').textContent = round(q3.nilaiPos);
+        out('iqr').textContent = round(iqrVal);
+        out('sr').textContent = round(sr);
+        out('var').textContent = round(varp);
+        out('sd').textContent = round(sd);
+
+        // Langkah rinci
+        const htmlQuartil = [
+          `<h2>Kuartil</h2>`,
+          `<p>Kuartil dibagi menjadi 4 bagian sama besar:</p>`,
+          `<div>Q<sub>1</sub> = 1/4 (n+1), Q<sub>2</sub> = 1/2 (n+1), Q<sub>3</sub> = 3/4 (n+1)</div>`,
+          `<ul><li>Q1 = kuartil pertama</li><li>Q2 = median</li><li>Q3 = kuartil ketiga</li><li>n = banyak data</li></ul>`,
+          `<h3>Contoh Kuartil Data Tunggal</h3>`,
+          q1.details,
+          `<br>`,
+          q2.details,
+          `<br>`,
+          q3.details,
+          `<br>`,
+          `<b>Hasil:</b> Q1 = ${round(q1.nilaiPos)}, Q2 = ${round(q2.nilaiPos)}, Q3 = ${round(q3.nilaiPos)}`
+        ].join('');
+
+        // Langkah lainnya
+        const stepsRentang = stepsRentangTunggal(sorted);
+        const stepsSR = stepsSRTunggal(data, xbar);
+        const stepsVar = stepsVarTunggal(data, xbar);
+        const stepsSD = stepsSDTunggal(data, xbar);
+
+        // Mean step
+        const stepsMean = `
+              <section class="card blue" aria-labelledby="mean-title-tunggal">
+                <div class="icon" aria-hidden="true">📘</div>
+                <h2 id="mean-title-tunggal">Mean (Rata-rata)</h2>
+                <p>Mean adalah jumlah seluruh data dibagi banyak data.</p>
+                <div>Rumus: Mean = Σx / n</div>
+                <div><b>Langkah Perhitungan:</b></div>
+                <div>Σx = ${data.join(' + ')} = ${sum(data)}</div>
+                <div>n = ${data.length}</div>
+                <div>Mean = ${sum(data)} / ${data.length} = <strong>${round(xbar)}</strong></div>
+              </section>
+            `;
+
+        // Median step
+        const stepsMedian = `
+              <section class="card purple" aria-labelledby="median-tunggal">
+                <div class="icon" aria-hidden="true">📏</div>
+                <h2 id="median-tunggal">Median</h2>
+                <p>Median adalah nilai tengah data urut.</p>
+                <div>Rumus Median = (n + 1) / 2</div>
+                <div>n = ${n}</div>
+                <div>Posisi median = ${(n+1)/2}</div>
+                <div>Median = <strong>${round(med)}</strong></div>
+              </section>
+            `;
+
+        // Modus step
+        const modusTxt = md ? md.modes.join(', ') + ` (muncul ${md.freq} kali)` : 'Tidak ada modus';
+        const stepsModus = `
+              <section class="card orange" aria-labelledby="modus-tunggal">
+                <div class="icon" aria-hidden="true">🎯</div>
+                <h2 id="modus-tunggal">Modus</h2>
+                <p>Modus adalah nilai yang paling sering muncul.</p>
+                <div><b>Nilai modus:</b> ${modusTxt}</div>
+              </section>
+            `;
+
+        stepsContent.innerHTML =
+          stepsMean + stepsMedian + stepsModus + stepsRentang + htmlQuartil + stepsSR + stepsVar +
+          stepsSD;
+
+      } else {
+        // data kelompok
+        const rows = Array.from(groupTbody.children);
+        if (!rows.length) {
+          alert('Tabel kosong. Tambah baris.');
+          return;
+        }
+        let data = rows.map(tr => {
+          const kelas = tr.querySelector('.kelas').value.trim();
+          const fi = Number(tr.querySelector('.fi').value) || 0;
+          const xiRaw = tr.querySelector('.xi').value.trim();
+          const xi = xiRaw === '' ? NaN : Number(xiRaw);
+          return {
+            kelas,
+            fi,
+            xi
+          };
+        }).filter(r => r.fi > 0 || !isNaN(r.xi));
+
+        const totalFi = sum(data.map(d => d.fi));
+        if (totalFi === 0) {
+          alert('Σfi harus > 0');
+          return;
+        }
+        // Auto isi xi bila kosong
+        data.forEach(r => {
+          if (isNaN(r.xi)) {
+            const bounds = parseClass(r.kelas);
+            r.xi = bounds ? (bounds.a + bounds.b) / 2 : 0;
+          }
+        });
+        const totalFixi = data.reduce((a, b) => a + b.fi * b.xi, 0);
+        const xbar = totalFixi / totalFi;
+
+        // Median kelas
+        const cumulative = [];
+        let c = 0;
+        for (const r of data) {
+          c += r.fi;
+          cumulative.push(c);
+        }
+        const half = totalFi / 2;
+        let medianIdx = cumulative.findIndex(v => v >= half);
+        if (medianIdx === -1) medianIdx = data.length - 1;
+        const Fprev = medianIdx > 0 ? cumulative[medianIdx - 1] : 0;
+        const fMedian = data[medianIdx].fi;
+        let L = NaN;
+        let p = NaN;
+        const pm = parseClass(data[medianIdx].kelas || '');
+        if (pm) {
+          L = pm.a - 0.5;
+          p = pm.b - pm.a + 1;
+        }
+        if (!p || p <= 0) {
+          const xis = data.map(d => d.xi).filter(x => !isNaN(x));
+          p = xis.length > 1 ? Math.abs(xis[1] - xis[0]) : 1;
+          if (isNaN(L)) L = data[medianIdx].xi - p / 2;
+        }
+        const Me = L + ((half - Fprev) / fMedian) * p;
+
+        // modus kelas
+        let modalIdx = 0,
+          maxfi = -1;
+        data.forEach((r, i) => {
+          if (r.fi > maxfi) {
+            maxfi = r.fi;
+            modalIdx = i;
+          }
+        });
+        const fModal = data[modalIdx].fi;
+        const fPrev = modalIdx > 0 ? data[modalIdx - 1].fi : 0;
+        const fNext = modalIdx < data.length - 1 ? data[modalIdx + 1].fi : 0;
+        const d1 = fModal - fPrev;
+        const d2 = fModal - fNext;
+        const mb = parseClass(data[modalIdx].kelas || '');
+        let Lm = mb ? mb.a - 0.5 : data[modalIdx].xi - p / 2;
+        const Mo = (d1 + d2) === 0 ? Lm : Lm + (d1 / (d1 + d2)) * p;
+
+        const varp = data.reduce((a, r) => a + r.fi * Math.pow(r.xi - xbar, 2), 0) / totalFi;
+        const sd = Math.sqrt(varp);
+
+        const fb = parseClass(data[0].kelas || '');
+        const lb = parseClass(data[data.length - 1].kelas || '');
+        let gRange = NaN;
+        if (fb && lb) gRange = lb.b - fb.a;
+        else {
+          const xis = data.map(d => d.xi).filter(x => !isNaN(x));
+          if (xis.length) gRange = Math.max(...xis) - Math.min(...xis);
+        }
+
+        // Kuartil kelompok
+        const quartiles = computeQuartilesGroup(data);
+
+        // Update output ringkas
+        out('mean').textContent = round(xbar);
+        out('median').textContent = round(Me);
+        out('mode').textContent = round(Mo);
+        out('range').textContent = !isNaN(gRange) ? round(gRange) : '—';
+        out('q1').textContent = round(quartiles.Q1.Q);
+        out('q3').textContent = round(quartiles.Q3.Q);
+        out('iqr').textContent = round(quartiles.Q3.Q - quartiles.Q1.Q);
+        out('sr').textContent = '—';
+        out('var').textContent = round(varp);
+        out('sd').textContent = round(sd);
+
+        // Langkah Mean
+        let cumF = [];
+        data.reduce((a, r, i) => cumF[i] = a + r.fi, 0);
+        const meanTableRows = data.map((r, i) =>
+          `<tr><td>${r.kelas}</td><td>${r.fi}</td><td>${round(r.xi)}</td><td>${round(r.fi*r.xi)}</td><td>${cumF[i]}</td></tr>`
+        ).join('');
+        const stepsMean = `
+                <section class="card blue" aria-labelledby="mean-title-group">
+                  <div class="icon" aria-hidden="true">📘</div>
+                  <h2 id="mean-title-group">Mean (Rata-rata)</h2>
+                  <p>Mean data kelompok dihitung dengan:</p>
+                  <div>Mean = Σ(fi × xi) / Σfi</div>
+                  <div><b>Tabel kelas dan frekuensi</b></div>
+                  <table class="calc" aria-label="Tabel mean data kelompok">
+                    <thead><tr><th>Kelas</th><th>fi</th><th>xi</th><th>fi×xi</th><th>F kumulatif</th></tr></thead>
+                    <tbody>${meanTableRows}</tbody>
+                    <tfoot><tr><th>Total</th><th>${totalFi}</th><th></th><th>${round(totalFixi)}</th><th></th></tr></tfoot>
+                  </table>
+                  <div>Mean = ${round(totalFixi)} / ${totalFi} = <strong>${round(xbar)}</strong></div>
+                </section>
+            `;
+
+        // Langkah Median Kelompok
+        const medianSteps = `
+                <section class="card purple" aria-labelledby="median-group">
+                  <div class="icon" aria-hidden="true">📏</div>
+                  <h2 id="median-group">Median</h2>
+                  <div>Median = Tb + p ((½n - F) / f)</div>
+                  <ul>
+                    <li>Tb = ${round(L)}</li>
+                    <li>p = ${round(p)}</li>
+                    <li>n = ${totalFi}</li>
+                    <li>F = ${round(Fprev)}</li>
+                    <li>f = ${round(fMedian)}</li>
+                  </ul>
+                  <div>Me = ${round(L)} + ${round(p)} × ((${half} - ${round(Fprev)}) / ${round(fMedian)}) = <strong>${round(Me)}</strong></div>
+                </section>
+            `;
+
+        // Langkah Modus Kelompok
+        const modusSteps = `
+                <section class="card orange" aria-labelledby="modus-group">
+                  <div class="icon" aria-hidden="true">🎯</div>
+                  <h2 id="modus-group">Modus</h2>
+                  <div>Modus = Lm + (d1 / (d1 + d2)) × p</div>
+                  <ul>
+                    <li>Lm = ${round(Lm)}</li>
+                    <li>d1 = ${round(d1)}</li>
+                    <li>d2 = ${round(d2)}</li>
+                    <li>p = ${round(p)}</li>
+                  </ul>
+                  <div>Mo = ${round(Lm)} + (${round(d1)} / (${round(d1)} + ${round(d2)})) x ${round(p)} = <strong>${round(Mo)}</strong></div>
+                </section>
+            `;
+
+        // Langkah Kuartil Kelompok
+        const kuartilSteps = [1, 2, 3].map(k => {
+          const q = quartiles[`Q${k}`];
+          return `
+                <section class="card">
+                  <div class="icon purple">📊</div>
+                  <h2>Kuartil</h2>
+                  <div>Rumus: Q<sub>k</sub> = L + ((k·n/4 − F) / f) × p</div>
+                  <ul>
+                    <li>L = ${round(q.L)}</li>
+                    <li>F = ${round(q.Fprev)}</li>
+                    <li>f = ${round(q.f)}</li>
+                    <li>p = ${round(q.p)}</li>
+                  </ul>
+                  <div>Posisi k·n/4 = ${(k*totalFi/4).toFixed(2)}</div>
+                  <div>Q<sub>${k}</sub> = ${round(q.L)} + ((${(k*totalFi/4).toFixed(2)} - ${round(q.Fprev)}) / ${round(q.f)}) × ${round(q.p)} = <strong>${round(q.Q)}</strong></div>
+                </section>
+                `;
+        }).join('');
+
+        // Langkah lainnya kelompok
+        const stepsRentang = stepsRentangKelompok(data);
+        const stepsSR = stepsSRKelompok(data, xbar, totalFi);
+        const stepsVar = stepsVarKelompok(data, xbar, totalFi);
+        const stepsSD = stepsSDKelompok(data, xbar, totalFi);
+
+        stepsContent.innerHTML = stepsMean + medianSteps + modusSteps + stepsRentang + kuartilSteps +
+          stepsSR + stepsVar + stepsSD;
+      }
+
+      stepsBlock.style.display = 'none';
+    });
+
+    // Show/Hide langkah event
+    stepsBtn.addEventListener('click', () => {
+      if (stepsBlock.style.display === 'none' || stepsBlock.style.display === '') {
+        if (!stepsContent.innerHTML) calcBtn.click();
+        stepsBlock.style.display = 'block';
+        stepsBtn.textContent = 'Sembunyikan Langkah';
+      } else {
+        stepsBlock.style.display = 'none';
+        stepsBtn.textContent = 'Langkah';
+      }
+    });
+
+    // Clear all
+    clearBtn.addEventListener('click', () => {
+      $('#single-input').value = '';
+      groupTbody.innerHTML = '';
+      refreshIdx();
+      ['mean', 'median', 'mode', 'range', 'q1', 'q3', 'iqr', 'sr', 'var', 'sd'].forEach(id => out(id)
+        .textContent = '—');
+      stepsContent.innerHTML = '';
+      stepsBlock.style.display = 'none';
+      stepsBtn.textContent = 'Langkah';
+    });
+
+
+    // Initialize example rows and data
+    (function init() {
+      $('#single-input').value = '12, 15, 18, 20, 25';
+      $('#reset-table').click();
+      modeEl.value = 'group';
+      modeEl.dispatchEvent(new Event('change'));
+    })();
+    // Download to Word document
+  </script>
+  <script>
+    document.getElementById("downloadWord").addEventListener("click", function () {
+      const judul = document.querySelector("h1")?.innerText || "Kalkulator Statistik";
+
+      // ===== CEK MODE =====
+      const mode = document.getElementById("mode").value;
+      let dataHTML = "";
+
+      // ===== DATA / SOAL =====
+      if (mode === "group") {
+        const table = document.querySelector("#data-table");
+        if (table) {
+          dataHTML = "<h2>Data / Soal</h2>";
+          dataHTML += "<table><thead>" + table.tHead.outerHTML + "</thead><tbody>";
+
+          const rows = table.querySelectorAll("tbody tr");
+          rows.forEach((row) => {
+            let newRow = "<tr>";
+            row.querySelectorAll("td").forEach((cell) => {
+              const input = cell.querySelector("input");
+              if (input) {
+                // Ambil nilai input (kelas, fi, xi)
+                newRow += `<td>${input.value || ""}</td>`;
+              } else if (cell.textContent.trim() === "Hapus") {
+                // Skip tombol hapus
+              } else {
+                newRow += `<td>${cell.textContent.trim()}</td>`;
+              }
+            });
+            newRow += "</tr>";
+            dataHTML += newRow;
+          });
+
+          dataHTML += "</tbody></table>";
+        } else {
+          dataHTML = "<p>Tidak ada data kelompok.</p>";
+        }
+      } else {
+        // Data tunggal
+        const dataTunggal = document.getElementById("single-input")?.value.trim();
+        dataHTML = "<h2>Data / Soal</h2>";
+        dataHTML += dataTunggal ?
+          `<p>${dataTunggal}</p>` :
+          "<p>Tidak ada data tunggal yang dimasukkan.</p>";
+      }
+
+      // ===== LANGKAH =====
+      const langkahEl = document.querySelector("#steps-content");
+      let langkahHTML = "";
+
+      if (langkahEl && langkahEl.innerHTML.trim() !== "") {
+        langkahHTML = `<h2>Langkah-langkah Perhitungan</h2>${langkahEl.innerHTML}`;
+      } else {
+        langkahHTML = "<h2>Langkah-langkah Perhitungan</h2><p>Belum ada langkah yang ditampilkan.</p>";
+      }
+
+      // ===== SUSUN DOKUMEN =====
+      const content = `
+    <html xmlns:o="urn:schemas-microsoft-com:office:office"
+          xmlns:w="urn:schemas-microsoft-com:office:word"
+          xmlns="http://www.w3.org/TR/REC-html40">
+    <head>
+      <meta charset="utf-8">
+      <title>${judul}</title>
+      <style>
+        body { font-family: Calibri, sans-serif; margin: 40px; line-height: 1.5; }
+        h1, h2 { text-align: center; color: #222; margin-bottom: 10px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+        th, td { border: 1px solid #444; padding: 6px; text-align: center; }
+        p { margin: 4px 0; }
+      </style>
+    </head>
+    <body>
+      <h1>${judul}</h1>
+      ${dataHTML}
+      ${langkahHTML}
+    </body>
+    </html>
+  `;
+
+      // ===== DOWNLOAD WORD =====
+      const blob = new Blob(["\ufeff", content], {
+        type: "application/msword"
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "Hasil_Statistik.doc";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 🧹 Sembunyikan langkah ketika mode berubah atau dihapus
+      const stepsBlock = document.getElementById("steps-block");
+      const clearBtn = document.getElementById("clear");
+      const modeSelect = document.getElementById("mode");
+
+      if (clearBtn && stepsBlock) {
+        clearBtn.addEventListener("click", () => {
+          stepsBlock.style.display = "none";
+        });
+      }
+
+      if (modeSelect && stepsBlock) {
+        modeSelect.addEventListener("change", () => {
+          stepsBlock.style.display = "none";
+        });
+      }
+    });
+  </script>
+
+
+</body>
+
+</html>

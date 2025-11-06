@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StatEdu - Materi</title>
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f4f8ff;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            text-align: center;
+        }
+
+        header {
+            padding: 30px 20px 10px;
+        }
+
+        header h1 {
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #555;
+            font-size: 1rem;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 30px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-direction: column;
+            padding: 20px;
+            overflow-x: visible;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            width: 280px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-top: 5px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h2 {
+            margin-top: 15px;
+            color: #007bff;
+            font-size: 1.2rem;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        .blue {
+            border-top-color: #007bff;
+        }
+
+        .green {
+            border-top-color: #28a745;
+        }
+
+        .icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .btn-back {
+            display: block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: 0.3s;
+            font-size: 0.95rem;
+            width: fit-content;
+            margin: 24px auto;
+        }
+
+        .btn-back:hover {
+            background-color: #0056b3;
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1 id="greet">Selamat Datang 👋</h1>
+        <p class="sub" id="sub">Pilih menu untuk melanjutkan</p>
+    </header>
+
+    <main>
+        <a href="pemusatan-data.html" style="text-decoration: none;">
+            <div class="card blue">
+                <div class="icon">📘</div>
+                <h2>Pemusatan Data</h2>
+                <p>Pelajari mean, median, dan modus.</p>
+            </div>
+        </a>
+
+        <a href="penyebaran-data.html" style="text-decoration: none;">
+            <div class="card green">
+                <div class="icon">📊</div>
+                <h2>Penyebaran Data</h2>
+                <p>Pelajari rentang, simpangan, dan varians data.</p>
+            </div>
+        </a>
+    </main>
+
+    <a href="student-dashboard.html" class="btn-back">← Kembali ke Dashboard</a>
+
+    <footer>
+        © 2025 StatEdu - Platform Pembelajaran Statistika
+    </footer>
+
+    <script>
+        (function init() {
+            // Ambil data user yang disimpan saat login (key: app_user)
+            const raw = localStorage.getItem('app_user');
+            let name = null;
+            let loggedAt = null;
+            let role = null;
+
+            if (raw) {
+                try {
+                    const u = JSON.parse(raw);
+                    name = u.name || null;
+                    loggedAt = u.loggedAt || null;
+                    role = u.role || null;
+                } catch (e) {
+                    // jika gagal parse, biarkan default
+                    console.warn('Gagal membaca session:', e);
+                }
+            }
+
+            // Fallback jika ada key lama/terpisah
+            if (!name) name = localStorage.getItem('namaSiswa') || 'Siswa';
+
+            // Isi header
+            const greetEl = document.getElementById('greet');
+            const subEl = document.getElementById('sub');
+            if (greetEl) greetEl.textContent = `${name}, Mau Belajar Apa Hari Ini?`;
+        })();
+
+        // tombol kembali / logout (jika ada)
+        const btnBack = document.getElementById('btnBack');
+        if (btnBack) btnBack.addEventListener('click', () => location.href = 'student-dashboard.html');
+
+        const btnLogout = document.getElementById('btnLogout');
+        if (btnLogout) btnLogout.addEventListener('click', () => {
+            localStorage.removeItem('app_user');
+            location.href = 'index.html';
+        });
+    </script>
+</body>
+
+</html>

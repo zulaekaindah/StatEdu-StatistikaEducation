@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StatEdu - Login</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #e8effd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+            text-align: center;
+            width: 340px;
+        }
+
+        .icon {
+            background: linear-gradient(135deg, #5a39ff, #6e5eff);
+            color: white;
+            font-size: 28px;
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+        }
+
+        h1 {
+            margin: 10px 0 5px;
+            color: #1a1a1a;
+        }
+
+        .subtitle {
+            color: #6c757d;
+            margin-bottom: 25px;
+        }
+
+        .tab {
+            display: flex;
+            background: #f0f2f6;
+            border-radius: 30px;
+            margin-bottom: 20px;
+        }
+
+        .tab button {
+            flex: 1;
+            border: none;
+            background: none;
+            padding: 10px 0;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .tab button.active {
+            background: white;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            color: #000;
+        }
+
+        .form {
+            text-align: left;
+        }
+
+        label {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            background: #f7f8fa;
+            border-radius: 10px;
+            margin-top: 5px;
+            padding: 8px 10px;
+        }
+
+        .icon-input {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        input {
+            border: none;
+            outline: none;
+            background: transparent;
+            flex: 1;
+            font-size: 14px;
+        }
+
+        button#btnMasuk {
+            background: #050017;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button#btnMasuk:hover {
+            background: #1b1136;
+        }
+
+        footer {
+            font-size: 12px;
+            color: #999;
+            margin-top: 30px;
+        }
+
+
+        /* Slight slide for the whole form/button so change feels like shifting */
+        .form {
+            transition: transform 280ms cubic-bezier(.2, .9, .2, 1);
+        }
+
+        .container.show-password .form {
+            transform: translateX(6px);
+        }
+
+        .container:not(.show-password) .form {
+            transform: translateX(0);
+        }
+
+        /* Smooth tab active indicator */
+        .tab button {
+            transition: background-color 220ms ease, color 220ms ease, transform 180ms ease;
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+
+        .tab button.active {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Optional: animate change of login button text color/style */
+        #btnMasuk {
+            transition: background-color 220ms ease, color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+            display: block;
+            width: 100%;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .container.show-password #btnMasuk {
+            transform: translateX(6px);
+        }
+
+        /* Aesthetic icon styles */
+        .icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            background: linear-gradient(135deg, #7dd3fc 0%, #60a5fa 45%, #7c3aed 100%);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.14), inset 0 -6px 18px rgba(255, 255, 255, 0.12);
+            color: #fff;
+            font-weight: 700;
+            font-size: 28px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 320ms cubic-bezier(.2, .9, .2, 1);
+        }
+
+        .icon:hover {
+            transform: translateY(-6px) scale(1.03);
+        }
+
+        .icon svg {
+            width: 42px;
+            height: 42px;
+            filter: drop-shadow(0 8px 24px rgba(59, 130, 246, 0.25));
+        }
+
+        .icon::after {
+            content: '';
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            top: -10%;
+            left: -10%;
+            background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.14), transparent 18%);
+            mix-blend-mode: overlay;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="icon" aria-hidden="true">
+                <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="gloss" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0" stop-color="#ffffff" stop-opacity="0.98" />
+                            <stop offset="1" stop-color="#ffffff" stop-opacity="0.8" />
+                        </linearGradient>
+                        <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#0b1220" flood-opacity="0.16" />
+                        </filter>
+                    </defs>
+
+
+                    <g filter="url(#shadow)">
+                        <path d="M4 24 L32 10 L60 24 L32 36 Z" fill="url(#gloss)" />
+                        <rect x="26" y="34" width="12" height="14" rx="3" fill="url(#gloss)" />
+                        <path d="M40 24 L40 34" stroke="rgba(0,0,0,0.06)" stroke-width="2" stroke-linecap="round" />
+                        <path d="M40 34 C38 36,36 38,36 40" stroke="#ffffff" stroke-width="2" stroke-linecap="round"
+                            fill="none" />
+                        <circle cx="36" cy="41.5" r="2" fill="#ffffff" />
+                    </g>
+
+
+                    <path d="M12 22 C20 16,44 16,52 22" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="4"
+                        stroke-linecap="round" />
+                </svg>
+            </div>
+
+            <h1>StatEdu</h1>
+            <p class="subtitle">Platform Pembelajaran Statistika</p>
+            <div class="form">
+                <label for="nama">Nama</label>
+                <div class="input-group">
+                    <span class="icon-input" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                            role="img" aria-hidden="true">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.6"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                    <input type="text" id="nama" placeholder="Masukkan nama Anda" />
+                </div>
+
+
+
+                <button id="btnMasuk" type="button" onclick="login()">Saya Siap Belajar</button>
+            </div>
+
+            <footer>© 2025 StatEdu-Platform Pembelajaran Statistika</footer>
+        </div>
+    </div>
+
+    <script>
+        function login() {
+            const nama = document.getElementById('nama').value.trim();
+            if (nama === '') {
+                alert('Nama harus diisi!');
+                return;
+            }
+
+            // Simpan data login siswa di localStorage
+            const user = {
+                role: 'siswa',
+                name: nama,
+                loggedAt: new Date().toISOString()
+            };
+            localStorage.setItem('app_user', JSON.stringify(user));
+
+            // Arahkan ke dashboard siswa
+            location.href = 'student-dashboard.html';
+        }
+
+        // Fokuskan input nama saat halaman dimuat
+        document.getElementById('nama').focus();
+    </script>
+
+</body>
+
+</html>

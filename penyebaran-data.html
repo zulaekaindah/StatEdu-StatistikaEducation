@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Materi | StatEdu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f8ff;
+            --card: #ffffff;
+            --accent: #2f6bff;
+            --muted: #64748b;
+            --glass: rgba(255, 255, 255, 0.6);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+            margin: 0;
+            background: linear-gradient(180deg, #f7fbff 0%, var(--bg) 100%);
+            color: #0f1724;
+            padding: 28px;
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .brand {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #7dd3fc, #7c3aed);
+            display: grid;
+            place-items: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 22px;
+            box-shadow: 0 10px 24px rgba(124, 58, 237, 0.12);
+        }
+
+        .title {
+            margin: 0
+        }
+
+        .subtitle {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 14px
+        }
+
+        .panel {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+            align-items: start
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 8px 24px rgba(2, 6, 23, 0.06);
+            transition: transform .18s ease, box-shadow .18s ease;
+            border: 1px solid rgba(15, 23, 42, 0.04);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(2, 6, 23, 0.08)
+        }
+
+        .card .icon {
+            width: 44px;
+            height: 44;
+            border-radius: 10px;
+            display: inline-grid;
+            place-items: center;
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 8px
+        }
+
+        .card.blue .icon {
+            background: linear-gradient(135deg, #2f6bff, #5aa0ff)
+        }
+
+        .card.green .icon {
+            background: linear-gradient(135deg, #16a34a, #60d68b)
+        }
+
+        .card.purple .icon {
+            background: linear-gradient(135deg, #8b5cf6, #c084fc)
+        }
+
+        .card.orange .icon {
+            background: linear-gradient(135deg, #f59e0b, #fb923c)
+        }
+
+        .card h2 {
+            margin: 0 0 6px;
+            font-size: 16px
+        }
+
+        .card p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px
+        }
+
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 16px 16px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 9999;
+        }
+
+        /* Avatar + Info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            background: linear-gradient(135deg, #5a67d8, #7f9cf5);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-weight: 600;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-text #name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-text .meta {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Tombol Aksi */
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chip {
+            background: #eef2ff;
+            color: #1e3a8a;
+            border: 1px solid #c7d2fe;
+            border-radius: 8px;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .chip:hover {
+            background: #e0e7ff;
+        }
+
+        /* Icon Buttons */
+        .icon-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            color: #1e3a8a;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: #dbeafe;
+        }
+
+        /* ensure inline SVG icons scale and inherit color */
+        .icon-btn svg {
+            width: 18px;
+            height: 18px;
+            display: block;
+            fill: currentColor;
+        }
+
+        /* Tambah jarak konten agar tidak ketutupan */
+        body {
+            margin-top: 80px;
+        }
+
+
+
+        /* content within large card for explanations */
+        .explain {
+            margin-top: 12px;
+            color: var(--muted);
+            line-height: 1.5
+        }
+
+        .formula {
+            background: linear-gradient(135deg, #e0e7ff, #f5f8ff);
+            color: #1e3a8a;
+            font-family: "Courier New", monospace;
+            font-size: 1.6em;
+            font-weight: bold;
+            white-space: nowrap;
+            text-align: center;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin: 15px auto 5px;
+            display: block;
+            width: fit-content;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #c7d2fe;
+        }
+
+        .rumus-info {
+            text-align: center;
+            color: #475569;
+            font-size: 0.95em;
+            margin-top: 8px;
+        }
+
+        .rumus-info ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .rumus-info li {
+            margin: 3px 0;
+        }
+
+
+
+        table.calc {
+            /* let table keep its intrinsic width (so columns don't wrap) */
+            width: max-content;
+            min-width: 100%;
+            table-layout: auto;
+            border-collapse: collapse;
+            margin-top: 10px;
+
+            /* scale font a bit responsively instead of wrapping */
+            font-size: clamp(11px, 1.6vw, 14px);
+        }
+
+        table.calc th,
+        table.calc td {
+            white-space: nowrap;
+
+            /* prevent wrapping inside cells */
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            /* if extremely narrow, show ellipsis */
+            padding: clamp(6px, 1vw, 8px);
+            text-align: center;
+        }
+
+        table.calc thead th {
+            background: #f1f5ff;
+            color: var(--muted);
+            font-weight: 600;
+            font-size: clamp(11px, 1.4vw, 13px);
+        }
+
+        /* If you want smaller spacing on very small devices */
+        @media (max-width:420px) {
+            table.calc {
+                font-size: 10px;
+            }
+
+            table.calc th,
+            table.calc td {
+                padding: 4px 6px;
+            }
+
+            .formula {
+                font-size: 0.9rem;
+                padding: 6px 8px;
+            }
+        }
+
+        /* Optional: if you want to allow user to zoom out content slightly */
+        .compact .wrap {
+            transform: scale(0.98);
+            transform-origin: top center;
+        }
+
+        /* --- Make tables keep their column layout on small screens --- */
+        /* Allow horizontal scroll inside the card/steps so table never breaks lines */
+        .steps {
+            background: #fbfdff;
+            border-left: 4px solid rgba(47, 107, 255, 0.08);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+
+            /* ADDED: enable smooth horizontal scrolling when table is wider than viewport */
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <div class="brand" aria-hidden="true">S</div>
+            <div>
+                <h1 class="title">Materi Statistika</h1>
+                <div class="subtitle">Penjelasan ringkas dengan contoh langkah demi langkah</div>
+            </div>
+        </header>
+
+        <div class="panel">
+            <main>
+
+                <!-- Rentang -->
+                <section class="card blue">
+                    <div class="icon">📏</div>
+                    <h2>1. Rentang / Jangkauan</h2>
+                    <p class="explain">Rentang (Range) menunjukkan seberapa jauh penyebaran data, diperoleh dari selisih
+                        nilai terbesar dan terkecil.</p>
+                    <div class="formula">R = X<sub>maks</sub> − X<sub>min</sub></div>
+                    <div class="rumus-info">
+                        <ul>
+                            <li>X<sub>maks</sub> = nilai terbesar</li>
+                            <li>X<sub>min</sub> = nilai terkecil</li>
+                        </ul>
+                    </div>
+                    <div class="steps">
+                        <div> <b>Contoh :</b> </div>
+                        <div>Misalkan ada data nilai ujian matematika dari 10 siswa sebagai berikut:
+                            70, 85, 75, 90, 80, 70, 95, 85, 90, 80
+                        </div>
+                        <div><b>Ditanya :</b> Rentang atau Jangkauan ?</div>
+                        <div> <b>Diketahui:</b> </div>
+                        <div>Nilai terbesar (X<sub>maks</sub>) = 95</div>
+                        <div>Nilai terkecil (X<sub>min</sub>) = 70</div>
+                        <div> <b>Penyelesaian:</b> </div>
+                        <div>R = X<sub>maks</sub> − X<sub>min</sub></div>
+                        <div>R = 95 − 70</div>
+                        <div>R = 25</div>
+                        <div style="margin-top:8px"><b>Jawab</b> : Rentang = <strong>25</strong></div>
+                    </div>
+                    <div>Contoh Data Kelompok</div>
+                    <div class="steps">
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>Kelas</th>
+                                    <th>fi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>61–70</td>
+                                    <td>4</td>
+                                </tr>
+                                <tr>
+                                    <td>71–80</td>
+                                    <td>8</td>
+                                </tr>
+                                <tr>
+                                    <td>81–90</td>
+                                    <td>10</td>
+                                </tr>
+                                <tr>
+                                    <td>91-100</td>
+                                    <td>6</td>
+                                </tr>
+
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>28</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div><b>Ditanya :</b> Rentang atau Jangkauan ?</div>
+                        <div> <b>Diketahui:</b> </div>
+                        <div>Nilai terbesar (X<sub>maks</sub>) = 100</div>
+                        <div>Nilai terkecil (X<sub>min</sub>) = 61</div>
+                        <div> <b>Penyelesaian:</b> </div>
+                        <div>R = X<sub>maks</sub> − X<sub>min</sub></div>
+                        <div>R = 100 − 61</div>
+                        <div>R = 39</div>
+                        <div style="margin-top:8px"><b>Jawab</b> : Rentang = <strong>39</strong></div>
+
+                    </div>
+
+
+                </section>
+
+                <!-- Kuartil -->
+                <section class="card purple">
+                    <div class="icon">📊</div>
+                    <h2>2. Kuartil</h2>
+                    <p class="explain">Kuartil membagi data menjadi empat bagian sama besar: Q₁, Q₂ (median), Q₃.</p>
+                    <div class="formula">Q<sub>1</sub> = 1/4 (n+1) <br>Q<sub>2</sub> = 1/2 (n+1) <br>Q<sub>3</sub> = 3/4
+                        (n+1)</div>
+                    <div class="rumus-info">
+                        <ul>
+                            <li>Q<sub>1</sub> = kuartil pertama</li>
+                            <li>Q<sub>2</sub> = kuartil kedua (median)</li>
+                            <li>Q<sub>3</sub> = kuartil ketiga</li>
+                            <li>n = banyak data</li>
+                        </ul>
+                    </div>
+                    <div class="steps">
+                        <div><b>Contoh :</b></div>
+                        <div>Terdapat sejumlah data pengujian yang terdiri dari 5, 7, 4, 4, 6, 2, 8</div>
+                        <div><b>Ditanya :</b> Q1, Q2, dan Q3 ?</div>
+                        <div> <b>Diketahui:</b> </div>
+                        <div>Urutan data : 2, 4, 4, 5, 6, 7, 8</div>
+                        <div>n = 7</div>
+                        <div> <b>Penyelesaian:</b> </div>
+                        <div>Q<sub>1</sub> = 1/4 (n+1) </div>
+                        <div>Q<sub>1</sub> = 1/4 (7+1) </div>
+                        <div>Q<sub>1</sub> = 1/4 (8) </div>
+                        <div>Q<sub>1</sub> = 2 → nilai ke-2 = <b>4</b></div>
+                        <br>
+                        <div>Q<sub>2</sub> = 1/2 (n+1) </div>
+                        <div>Q<sub>2</sub> = 1/2 (7+1) </div>
+                        <div>Q<sub>2</sub> = 1/2 (8 )</div>
+                        <div>Q<sub>2</sub> = 4 → nilai ke- 4 = <b>5</b></div>
+                        <br>
+                        <div>Q<sub>3</sub> = 3/4 (n+1) </div>
+                        <div>Q<sub>3</sub> = 3/4 (7+1) </div>
+                        <div>Q<sub>3</sub> = 3/4 (8) </div>
+                        <div>Q<sub>3</sub> = 6 → nilai ke-6 = <b>7</b></div>
+                        <div style="margin-top:8px"><b>Jawab</b> : Q1 = <strong>4</strong>, Q2 = <strong>5</strong>, Q3
+                            = <strong>7</strong></div>
+
+                    </div>
+                    <!-- Kuartil data kelompok -->
+                    <div>Rumus Data Kelompok</div>
+                    <div class="formula">Q<sub>k</sub> = L + ((k·n/4 − F) / f) × p</div>
+                    <div class="rumus-info">
+                        <ul>
+                            <li>L = tepi bawah kelas kuartil</li>
+                            <li>F = frekuensi kumulatif sebelum kelas kuartil</li>
+                            <li>f = frekuensi kelas kuartil</li>
+                            <li>p = panjang kelas</li>
+                        </ul>
+                    </div>
+                    <div>Contoh Data Kelompok</div>
+                    <div class="steps">
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>Nilai</th>
+                                    <th>frekuensi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>66–70</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>71–75</td>
+                                    <td>5</td>
+                                </tr>
+                                <tr>
+                                    <td>76–80</td>
+                                    <td>10</td>
+                                </tr>
+                                <tr>
+                                    <td>81-85</td>
+                                    <td>9</td>
+                                </tr>
+                                <td>86-90</td>
+                                <td>6</td>
+                                </tr>
+                                <tr>
+                                    <td>91-95</td>
+                                    <td>8</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>40</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div><b>Ditanya :</b> Q1?</div>
+                        <div> <b>Diketahui:</b> </div>
+                        <div>n = 40 </div>
+                        <div>Q1 = 1/4 (n+1)</div>
+                        <div>Q1 = 1/4 (40+1)</div>
+                        <div>Q1 = 1/4 (41)</div>
+                        <div>Q1 = 10.25 → kelas kuartil ke-1 adalah kelas ke-3 (76-80)</div>
+                        <div>L = 75.5</div>
+                        <div>F = 5+2 = 7</div>
+                        <div>f = 10</div>
+                        <div>p = 5</div>
+
+                        <div> <b>Penyelesaian:</b> </div>
+                        <div>Q<sub>k</sub> = L + ((k·n/4 − F) / f) × p</div>
+                        <div>Q1 = L + ((1·n/4 − F) / f) × p </div>
+                        <div>Q1 = 75.5 + ((1·40/4 − 7) / 10) × 5 </div>
+                        <div>Q1 = 75.5 + ((10 − 7) / 10) × 5 </div>
+                        <div>Q1 = 75.5 + (3 / 10) × 5 </div>
+                        <div>Q1 = 75.5 + 1.5 </div>
+                        <div>Q1 = 77</div>
+                        <div style="margin-top:8px"><b>Jawab</b> : Q1 = <strong>77</strong></div>
+                    </div>
+                </section>
+
+
+                <!-- Simpangan Rata-rata -->
+                <section class="card orange">
+                    <div class="icon">📐</div>
+                    <h2>3. Simpangan Rata-rata</h2>
+                    <p class="explain">Simpangan rata-rata adalah bentuk penyebaran data yang menunjukkan selisih suatu
+                        data
+                        terhadap nilai rata-ratanya. Dengan adanya simpangan rata-rata kamu bisa tahu sejauh mana
+                        data-data itu
+                        menyimpang dari nilai pusatnya. Suatu data dikatakan konsisten jika simpangan rata-ratanya cukup
+                        kecil,
+                        sehingga selisih antara data tersebut dan rata-ratanya tidak terlalu besar. Artinya, datanya
+                        cukup
+                        seragam. Perhatikan contoh berikut.</p>
+                    <div class="formula">SR = Σ|x − x̄| / n</div>
+                    <div class="rumus-info">
+                        <ul>
+                            <li>x = tiap nilai data</li>
+                            <li>x̄ = mean</li>
+                            <li>n = jumlah data</li>
+                            <li>|| = Tanda nilai mutlak</li>
+                        </ul>
+                    </div>
+                    <div class="steps">
+                        <div><b>Contoh:</b> </div>
+                        <div>Diketahui data sebagai berikut: 5, 8, 6, 10, 7</div>
+                        <div><b>Ditanya :</b>Hitung simpangan rata-ratanya!</div>
+                        <div><b>Penyelesaian:</b></div>
+                        <div><b>Diketahui :</b></div>
+                        <div> n = 5</div>
+                        <div>x̄ = (5+8+6+10+7)/5</div>
+                        <div>x̄ = 36/5</div>
+                        <div>x̄ = 7.2</div>
+                        <br>
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>x</th>
+                                    <th>|x − x̄|</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>5</td>
+                                    <td>2.2</td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>0.8</td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>1.2</td>
+                                </tr>
+                                <tr>
+                                    <td>10</td>
+                                    <td>2.8</td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td>0.2</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>7.2</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div>SR = Σ|x − x̄| / n</div>
+                        <div>SR = 7.2 / 5</div>
+                        <div>SR = 1.44</div>
+                        <div style="margin-top:8px"><b>Jawab</b> : Simpangan Rata-rata = <strong>1.44</strong></div>
+                    </div>
+                    <!-- Data Kelompok -->
+                    <div> Simpangan Rata-rata Data Kelompok</div>
+                    <div class="formula">SR = Σf|x − x̄| / n</div>
+                    <div class="rumus-info">
+                        <ul>
+                            <li>f = Frekuensi</li>
+                            <li>x = tiap nilai data/ nilai tengah</li>
+                            <li>x̄ = mean</li>
+                            <li>n = jumlah data</li>
+                            <li>|| = Tanda nilai mutlak</li>
+                        </ul>
+                    </div>
+                    <div class="steps">
+                        <div><b>Contoh:</b> </div>
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>nilai</th>
+                                    <th>frekuensi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1-3</td>
+                                    <td>10</td>
+                                </tr>
+                                <tr>
+                                    <td>4-6</td>
+                                    <td>6</td>
+                                </tr>
+                                <tr>
+                                    <td>7-9</td>
+                                    <td>5</td>
+                                </tr>
+                                <tr>
+                                    <td>10-12</td>
+                                    <td>5</td>
+                                </tr>
+                                <tr>
+                                    <td>13-15</td>
+                                    <td>4</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div><b>Ditanya: </b>Simpangan Rata-rata data kelompok?</div>
+                        <div><b>Penyelesaian:</b></div>
+                        <div><b>Diketahui:</b></div>
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>nilai</th>
+                                    <th>frekuensi</th>
+                                    <th>x</th>
+                                    <th>f * x</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1-3</td>
+                                    <td>10</td>
+                                    <td>2</td>
+                                    <td>20</td>
+                                </tr>
+                                <tr>
+                                    <td>4-6</td>
+                                    <td>6</td>
+                                    <td>5</td>
+                                    <td>30</td>
+                                </tr>
+                                <tr>
+                                    <td>7-9</td>
+                                    <td>5</td>
+                                    <td>8</td>
+                                    <td>40</td>
+                                </tr>
+                                <tr>
+                                    <td>10-12</td>
+                                    <td>5</td>
+                                    <td>11</td>
+                                    <td>55</td>
+                                </tr>
+                                <tr>
+                                    <td>13-15</td>
+                                    <td>4</td>
+                                    <td>14</td>
+                                    <td>56</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>30</th>
+                                    <th></th>
+                                    <th>201</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div>x̄ = 201/30</div>
+                        <div>x̄ = 6.7</div>
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>nilai</th>
+                                    <th>frekuensi</th>
+                                    <th>x</th>
+                                    <th>f * x</th>
+                                    <th>|x − x̄|</th>
+                                    <th>f|x − x̄|</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1-3</td>
+                                    <td>10</td>
+                                    <td>2</td>
+                                    <td>20</td>
+                                    <td>4.7</td>
+                                    <td>47</td>
+                                </tr>
+                                <tr>
+                                    <td>4-6</td>
+                                    <td>6</td>
+                                    <td>5</td>
+                                    <td>30</td>
+                                    <td>1.7</td>
+                                    <td>10.2</td>
+                                </tr>
+                                <tr>
+                                    <td>7-9</td>
+                                    <td>5</td>
+                                    <td>8</td>
+                                    <td>40</td>
+                                    <td>1.3</td>
+                                    <td>6.5</td>
+                                </tr>
+                                <tr>
+                                    <td>10-12</td>
+                                    <td>5</td>
+                                    <td>11</td>
+                                    <td>55</td>
+                                    <td>4.3</td>
+                                    <td>21.5</td>
+                                </tr>
+                                <tr>
+                                    <td>13-15</td>
+                                    <td>4</td>
+                                    <td>14</td>
+                                    <td>56</td>
+                                    <td>7.3</td>
+                                    <td>29.2</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>30</th>
+                                    <th></th>
+                                    <th>201</th>
+                                    <th></th>
+                                    <th>114.4</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div>SR = Σf|x − x̄| / n
+                        </div>
+                        <div>SR = 114.4 / 30</div>
+                        <div>SR = 3.81</div>
+                        <div style="margin-top:8px"><b>Jawab</b> : Simpangan Rata-rata = <strong>3.81</strong></div>
+                    </div>
+
+                </section>
+
+                <!-- Ragam -->
+                <section class="card green">
+                    <div class="icon">📗</div>
+                    <h2>4. Ragam (Varians)</h2>
+                    <p class="explain">Ragam adalah nilai statistik yang sering kali dipakai dalam menentukan kedekatan
+                        sebaran
+                        data yang ada di dalam sampel dan seberapa dekat titik data individu dengan mean atau rata-rata
+                        nilai
+                        dari sampel itu sendiri.
+
+                        Ragam biasanya diajarkan pada ilmu statistik untuk mengukur tingkat kesamaan atau kedekatan
+                        dalam suatu
+                        kelompok.</p>
+                    <div class="formula">S² = Σ(x − x̄)² / n</div>
+                    <div class="rumus-info">
+                        <ul>
+                            <li>x = tiap nilai data</li>
+                            <li>x̄ = mean</li>
+                            <li>n = jumlah data</li>
+                        </ul>
+                    </div>
+                    <div class="steps">
+                        <div><b>Contoh:</b> Data: 6,7,8,9,5</div>
+                        <div><b>Ditanya : </b> Ragam data diatas?</div>
+                        <div><b>Penyelesaian:</b></div>
+                        <div><b>Diketahui :</b></div>
+                        <div>n = 5</div>
+                        <div>x̄ = (6+7+8+9+5)/5 </div>
+                        <div>x̄ = 35/5</div>
+                        <div>x̄ = 7</div>
+                        <div>Selisih</div>
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>x</th>
+                                    <th>x − x̄</th>
+                                    <th>Σ(x − x̄)²</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>6</td>
+                                    <td>6-7 = -1</td>
+                                    <td>(-1)² = 1</td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td>7-7= 0</td>
+                                    <td>0²= 0</td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>8-7 = 1</td>
+                                    <td>1²= 1</td>
+                                </tr>
+                                <tr>
+                                    <td>9</td>
+                                    <td>9-7 = 2</td>
+                                    <td>2²= 4</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>5-7 = -2</td>
+                                    <td>(-2)²= 4</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th></th>
+                                    <th>10</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div>S² = Σ(x − x̄)² / n</div>
+                        <div>S² = 10 / 5</div>
+                        <div>S² =2</div>
+                        <div style="margin-top:8px"><b>Jawab</b> : Ragam = <strong>2</strong></div>
+                    </div>
+                    <!-- Data Kelompok -->
+                    <div>Ragam Data Kelompok</div>
+                    <div class="formula">S² = Σf(x − x̄)² / n</div>
+                    <div class="rumus-info">
+                        <ul>
+                            <li>f = frekuensi</li>
+                            <li>x = tiap nilai data</li>
+                            <li>x̄ = mean</li>
+                            <li>n = jumlah data</li>
+                        </ul>
+                    </div>
+                    <div class="steps">
+                        <div><b>Contoh:</b> </div>
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>nilai</th>
+                                    <th>frekuensi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>63-67</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>68-72</td>
+                                    <td>3</td>
+                                </tr>
+                                <tr>
+                                    <td>73-77</td>
+                                    <td>6</td>
+                                </tr>
+                                <tr>
+                                    <td>78-82</td>
+                                    <td>4</td>
+                                </tr>
+                                <tr>
+                                    <td>83-87</td>
+                                    <td>4</td>
+                                </tr>
+                                <tr>
+                                    <td>88-92</td>
+                                    <td>1</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div><b>Penyelesaian:</b></div>
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>nilai</th>
+                                    <th>frekuensi</th>
+                                    <th>x</th>
+                                    <th>x . fi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>63-67</td>
+                                    <td>2</td>
+                                    <td>65</td>
+                                    <td>130</td>
+                                </tr>
+                                <tr>
+                                    <td>68-72</td>
+                                    <td>3</td>
+                                    <td>70</td>
+                                    <td>210</td>
+                                </tr>
+                                <tr>
+                                    <td>73-77</td>
+                                    <td>6</td>
+                                    <td>75</td>
+                                    <td>450</td>
+                                </tr>
+                                <tr>
+                                    <td>78-82</td>
+                                    <td>4</td>
+                                    <td>80</td>
+                                    <td>320</td>
+                                </tr>
+                                <tr>
+                                    <td>83-87</td>
+                                    <td>4</td>
+                                    <td>85</td>
+                                    <td>340</td>
+                                </tr>
+                                <tr>
+                                    <td>88-92</td>
+                                    <td>1</td>
+                                    <td>90</td>
+                                    <td>90</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>20</th>
+                                    <th></th>
+                                    <th>1540</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div><b>Diketahui:</b></div>
+                        <div>x̄ = 1540/20 = 77</div>
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>nilai</th>
+                                    <th>frekuensi</th>
+                                    <th>x</th>
+                                    <th>f * x</th>
+                                    <th>x-x̄</th>
+                                    <th>(x-x̄)²</th>
+                                    <th>f(x-x̄)²</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>63-67</td>
+                                    <td>2</td>
+                                    <td>65</td>
+                                    <td>130</td>
+                                    <td>-12</td>
+                                    <td>144</td>
+                                    <td>288</td>
+                                </tr>
+                                <tr>
+                                    <td>68-72</td>
+                                    <td>3</td>
+                                    <td>70</td>
+                                    <td>210</td>
+                                    <td>-7</td>
+                                    <td>49</td>
+                                    <td>147</td>
+                                </tr>
+                                <tr>
+                                    <td>73-77</td>
+                                    <td>6</td>
+                                    <td>75</td>
+                                    <td>450</td>
+                                    <td>-2</td>
+                                    <td>4</td>
+                                    <td>24</td>
+                                </tr>
+                                <tr>
+                                    <td>78-82</td>
+                                    <td>4</td>
+                                    <td>80</td>
+                                    <td>320</td>
+                                    <td>3</td>
+                                    <td>9</td>
+                                    <td>36</td>
+                                </tr>
+                                <tr>
+                                    <td>83-87</td>
+                                    <td>4</td>
+                                    <td>85</td>
+                                    <td>340</td>
+                                    <td>8</td>
+                                    <td>64</td>
+                                    <td>256</td>
+                                </tr>
+                                <tr>
+                                    <td>88-92</td>
+                                    <td>1</td>
+                                    <td>90</td>
+                                    <td>90</td>
+                                    <td>13</td>
+                                    <td>169</td>
+                                    <td>169</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>20</th>
+                                    <th></th>
+                                    <th>1540</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th>920</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div>S² = Σf(x − x̄)² / n</div>
+                        <div>S² = 920 / 20</div>
+                        <div>S² = 46</div>
+                        <div style="margin-top:8px"><b>Jawab</b> : Ragam = <strong>46</strong></div>
+                    </div>
+                </section>
+
+                <!-- Standar Deviasi -->
+                <section class="card blue">
+                    <div class="icon">📈</div>
+                    <h2>5. Standar Deviasi</h2>
+                    <p class="explain">Standar deviasi atau simpangan baku biasanya diajarkan pada ilmu statistik untuk
+                        mengukur
+                        tingkat kesamaan atau kedekatan dalam suatu kelompok.
+
+                        Standar deviasi adalah nilai statistik yang sering kali dipakai dalam menentukan kedekatan
+                        sebaran data
+                        yang ada di dalam sampel dan seberapa dekat titik data individu dengan mean atau rata-rata nilai
+                        dari
+                        sampel itu sendiri.</p>
+                    <div class="formula">S = √(Σ(x − x̄)² / n)</div>
+                    <div class="rumus-info">
+                        <ul>
+                            <li>S = akar dari ragam (varians)</li>
+                            <li>x = tiap nilai data</li>
+                            <li>x̄ = mean</li>
+                            <li>n = jumlah data</li>
+                        </ul>
+                    </div>
+                    <div class="steps">
+                        <div><b>Contoh:</b> Di suatu kelas bimbel terdiri dari 8 orang yang memiliki tinggi (dalam cm)
+                            150, 167,
+                            175, 157, 165, 153, 177, dan 160.</div>
+                        <div><b>Ditanya :</b> Standar deviasi?</div>
+                        <div><b>Penyelesaian:</b></div>
+                        <div><b>Diketahui:</b></div>
+                        <div>data : 150, 167, 175, 157, 165, 153, 177, 160</div>
+                        <div>n = 8</div>
+                        <div>x̄ = (150 + 167 + 175 + 157 + 165 + 153 + 177 + 160)/8</div>
+                        <div>x̄ = 1304/8</div>
+                        <div>x̄ = 163</div>
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>x</th>
+                                    <th>x − x̄</th>
+                                    <th>(x − x̄)²</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>150</td>
+                                    <td>-13</td>
+                                    <td>169</td>
+                                </tr>
+                                <tr>
+                                    <td>167</td>
+                                    <td>4</td>
+                                    <td>16</td>
+                                </tr>
+                                <tr>
+                                    <td>175</td>
+                                    <td>12</td>
+                                    <td>144</td>
+                                </tr>
+                                <tr>
+                                    <td>157</td>
+                                    <td>-6</td>
+                                    <td>36</td>
+                                </tr>
+                                <tr>
+                                    <td>165</td>
+                                    <td>2</td>
+                                    <td>4</td>
+                                </tr>
+                                <tr>
+                                    <td>153</td>
+                                    <td>-10</td>
+                                    <td>100</td>
+                                </tr>
+                                <tr>
+                                    <td>177</td>
+                                    <td>14</td>
+                                    <td>196</td>
+                                </tr>
+                                <tr>
+                                    <td>160</td>
+                                    <td>3</td>
+                                    <td>9 </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th></th>
+                                    <th>674</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div>S = √(Σ(x − x̄)² / n)</div>
+                        <div>S = √ (674/ 8)</div>
+                        <div>S = √84.25</div>
+                        <div>S = 9.178</div>
+                        <div style="margin-top:8px"><b>Jawab</b> : Standar Deviasi = <strong>9.178</strong></div>
+                    </div>
+
+                    <!-- Data kelompok -->
+                    <div>Standar Deviasi Data Kelompok</div>
+                    <div class="formula">S = √(Σf(x − x̄)² / n)</div>
+                    <div class="rumus-info">
+                        <ul>
+                            <li>S = akar dari ragam (varians)</li>
+                            <li>f = frekuensi</li>
+                            <li>x = tiap nilai data</li>
+                            <li>x̄ = mean</li>
+                            <li>n = jumlah data</li>
+                        </ul>
+                    </div>
+                    <div class="steps">
+                        <div><b>Contoh:</b> </div>
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>nilai</th>
+                                    <th>frekuensi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>63-67</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>68-72</td>
+                                    <td>3</td>
+                                </tr>
+                                <tr>
+                                    <td>73-77</td>
+                                    <td>6</td>
+                                </tr>
+                                <tr>
+                                    <td>78-82</td>
+                                    <td>4</td>
+                                </tr>
+                                <tr>
+                                    <td>83-87</td>
+                                    <td>4</td>
+                                </tr>
+                                <tr>
+                                    <td>88-92</td>
+                                    <td>1</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div><b>Penyelesaian:</b></div>
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>nilai</th>
+                                    <th>frekuensi</th>
+                                    <th>x</th>
+                                    <th>x . fi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>63-67</td>
+                                    <td>2</td>
+                                    <td>65</td>
+                                    <td>130</td>
+                                </tr>
+                                <tr>
+                                    <td>68-72</td>
+                                    <td>3</td>
+                                    <td>70</td>
+                                    <td>210</td>
+                                </tr>
+                                <tr>
+                                    <td>73-77</td>
+                                    <td>6</td>
+                                    <td>75</td>
+                                    <td>450</td>
+                                </tr>
+                                <tr>
+                                    <td>78-82</td>
+                                    <td>4</td>
+                                    <td>80</td>
+                                    <td>320</td>
+                                </tr>
+                                <tr>
+                                    <td>83-87</td>
+                                    <td>4</td>
+                                    <td>85</td>
+                                    <td>340</td>
+                                </tr>
+                                <tr>
+                                    <td>88-92</td>
+                                    <td>1</td>
+                                    <td>90</td>
+                                    <td>90</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>20</th>
+                                    <th></th>
+                                    <th>1540</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div><b>Diketahui:</b></div>
+                        <div>x̄ = 1540/20 = 77</div>
+                        <table class="calc" style="margin-top:10px">
+                            <thead>
+                                <tr>
+                                    <th>nilai</th>
+                                    <th>frekuensi</th>
+                                    <th>x</th>
+                                    <th>f * x</th>
+                                    <th>x-x̄</th>
+                                    <th>(x-x̄)²</th>
+                                    <th>f(x-x̄)²</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>63-67</td>
+                                    <td>2</td>
+                                    <td>65</td>
+                                    <td>130</td>
+                                    <td>-12</td>
+                                    <td>144</td>
+                                    <td>288</td>
+                                </tr>
+                                <tr>
+                                    <td>68-72</td>
+                                    <td>3</td>
+                                    <td>70</td>
+                                    <td>210</td>
+                                    <td>-7</td>
+                                    <td>49</td>
+                                    <td>147</td>
+                                </tr>
+                                <tr>
+                                    <td>73-77</td>
+                                    <td>6</td>
+                                    <td>75</td>
+                                    <td>450</td>
+                                    <td>-2</td>
+                                    <td>4</td>
+                                    <td>24</td>
+                                </tr>
+                                <tr>
+                                    <td>78-82</td>
+                                    <td>4</td>
+                                    <td>80</td>
+                                    <td>320</td>
+                                    <td>3</td>
+                                    <td>9</td>
+                                    <td>36</td>
+                                </tr>
+                                <tr>
+                                    <td>83-87</td>
+                                    <td>4</td>
+                                    <td>85</td>
+                                    <td>340</td>
+                                    <td>8</td>
+                                    <td>64</td>
+                                    <td>256</td>
+                                </tr>
+                                <tr>
+                                    <td>88-92</td>
+                                    <td>1</td>
+                                    <td>90</td>
+                                    <td>90</td>
+                                    <td>13</td>
+                                    <td>169</td>
+                                    <td>169</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>20</th>
+                                    <th></th>
+                                    <th>1540</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th>920</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div>S = √(Σf(x − x̄)² / n)</div>
+                        <div>S = √920 / 20</div>
+                        <div>S = √46</div>
+                        <div style="margin-top:8px"><b>Jawab</b> : Standar Deviasi = <strong>√46</strong></div>
+                </section>
+
+            </main>
+
+            <aside class="sidebar" aria-label="Informasi pengguna">
+                <div class="user-info">
+                    <div class="avatar" id="avatar">A</div>
+                    <div class="user-text">
+                        <div id="name">ana</div>
+                        <div class="meta" id="when">Masuk: 10/31/2025, 11:54:53 AM</div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <div class="icon-buttons">
+                        <button class="icon-btn" id="btnBack" title="Dashboard" aria-label="Dashboard">
+                            <!-- Home icon (inline SVG) -->
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M3 11.5V21a1 1 0 0 0 1 1h5v-7h4v7h5a1 1 0 0 0 1-1v-9.5l-8-6-8 6z" />
+                            </svg>
+                        </button>
+                        <button class="icon-btn" id="btnLogout" title="Keluar" aria-label="Keluar">
+                            <!-- Logout icon (inline SVG) -->
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path
+                                    d="M16 13v-2H7V8l-5 4 5 4v-3zM20 3h-8v2h8v14h-8v2h8a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+
+        <footer>© 2025 StatEdu - Platform Pembelajaran Statistika</footer>
+    </div>
+
+    <script>
+        (function init() {
+            const raw = localStorage.getItem('app_user');
+            if (!raw) return;
+            try {
+                const u = JSON.parse(raw);
+                if (u && u.name) {
+                    document.getElementById('name').textContent = u.name;
+                    document.getElementById('when').textContent = `Masuk: ${new Date(u.loggedAt).toLocaleString()}`;
+                    document.getElementById('avatar').textContent = (u.name[0] || 'S').toUpperCase();
+                }
+            } catch (e) {
+                console.warn(e)
+            }
+        })();
+
+        document.getElementById('btnBack').addEventListener('click', () => location.href = 'student-dashboard.html');
+        document.getElementById('btnLogout').addEventListener('click', () => {
+            localStorage.removeItem('app_user');
+            location.href = 'index.html';
+        });
+        document.getElementById('btnAll').addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+</body>
+
+</html>

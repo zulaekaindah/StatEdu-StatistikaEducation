@@ -1,0 +1,961 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Game Statistik - 5 Level</title>
+  <style>
+    :root {
+      --bg: #f3f6ff;
+      --card: #ffffff;
+      --accent: #2463eb;
+      --accent-light: #e2ebff;
+      --text: #0f1724;
+      --muted: #64748b;
+      --radius: 14px;
+      --shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 960px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #back-btn {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      background: var(--card);
+      border-radius: 50%;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+    }
+
+    #back-btn:hover {
+      background: var(--accent);
+    }
+
+    #back-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--accent);
+      transition: fill 0.2s ease;
+    }
+
+    #back-btn:hover svg {
+      fill: #ffffff;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      color: var(--accent);
+    }
+
+    .hud {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .hud .item {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .timer-bar {
+      position: relative;
+      height: 10px;
+      background: #e9eefc;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .timer-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+      background: linear-gradient(90deg, #22c55e, #ef4444);
+      transform-origin: left;
+      transition: width 0.2s linear;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .question {
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .btn {
+      cursor: pointer;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 600;
+      background: #eef4ff;
+      color: var(--accent);
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .drag-pool,
+    .drop-zone {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      width: 100%;
+    }
+
+    .token {
+      background: #f1f5ff;
+      border: 2px dashed #c7d2fe;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      font-weight: 600;
+      cursor: grab;
+    }
+
+    .slot {
+      background: #f8faff;
+      border: 2px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 10px;
+      min-height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .pair-btn {
+      background: #eef4ff;
+      color: var(--accent);
+      border: 2px solid transparent;
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+      width: 100%;
+      min-height: 48px;
+      /* touch target */
+      font-size: clamp(14px, 4vw, 16px);
+    }
+
+    .pair-btn.active {
+      border-color: var(--accent);
+      background: #e2ebff;
+    }
+
+    /* line canvas for matching */
+    .match-wrap {
+      position: relative;
+      min-height: 0;
+    }
+
+    .match-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+    }
+
+    .match-line {
+      stroke: #2463eb;
+      stroke-width: 3;
+      stroke-linecap: round;
+      opacity: 0.9;
+    }
+
+    .result-box {
+      text-align: center;
+      margin-top: 12px;
+      color: var(--muted);
+    }
+
+    /* Level toast */
+    .level-toast {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(15, 23, 42, 0.35);
+      z-index: 1000;
+    }
+
+    .level-toast .content {
+      background: var(--card);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 16px 18px;
+      width: min(92vw, 520px);
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .hud {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .drag-pool,
+      .drop-zone,
+      .cols {
+        grid-template-columns: 1fr;
+      }
+
+      .cols {
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title-row">
+        <a href="student-dashboard.html" id="back-btn" title="Kembali" aria-label="Kembali ke Dashboard">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+          </svg>
+        </a>
+        <h1>Game Statistik - 5 Level</h1>
+      </div>
+    </header>
+
+    <div class="hud">
+      <div class="item">
+        <div>Level</div>
+        <div id="hud-level">1</div>
+      </div>
+      <div class="item">
+        <div>Soal</div>
+        <div id="hud-q">1 / 4</div>
+      </div>
+      <div class="item">
+        <div>Skor</div>
+        <div id="hud-score">0</div>
+      </div>
+      <div class="item">
+        <div>Waktu</div>
+        <div class="timer-bar">
+          <div class="timer-fill" id="timer-fill"></div>
+        </div>
+        <div id="hud-time" aria-live="polite">20s</div>
+      </div>
+    </div>
+
+    <div class="card" id="game-card">
+      <div class="question" id="question-text">Mulai permainan!</div>
+      <div id="interaction"></div>
+
+      <div class="result-box" id="result-box"></div>
+    </div>
+    <div class="level-toast" id="level-toast" aria-live="polite" aria-atomic="true">
+      <div class="content" id="level-toast-content">Level selesai</div>
+    </div>
+  </div>
+
+  <script>
+    const SECONDS_PER_QUESTION = 20;
+
+    const levels = [{
+        name: 'Pemusatan Data (Dasar)',
+        type: 'mcq',
+        items: [{
+            q: 'Mean adalah...',
+            options: ['Nilai tengah data', 'Nilai paling sering muncul', 'Rata-rata data',
+              'Selisih nilai maksimum dan minimum'
+            ],
+            a: 2
+          },
+          {
+            q: 'Median adalah...',
+            options: ['Nilai tengah data urut', 'Rata-rata data', 'Nilai terbesar', 'Banyaknya kelas'],
+            a: 0
+          },
+          {
+            q: 'Modus adalah...',
+            options: ['Nilai paling kecil', 'Nilai paling sering muncul', 'Banyak data', 'Simpangan'],
+            a: 1
+          },
+          {
+            q: 'Dari data: 2, 3, 3, 5, 7. Modusnya?',
+            options: ['2', '3', '5', '7'],
+            a: 1
+          }
+        ]
+      },
+      {
+        name: 'Penyebaran Data (Dasar)',
+        type: 'mcq',
+        items: [{
+            q: 'Range (jangkauan) adalah...',
+            options: ['Nilai tengah', 'Nilai sering muncul', 'x̄', 'Xmax − Xmin'],
+            a: 3
+          },
+          {
+            q: 'Simpangan rata-rata menggunakan...',
+            options: ['Σ|x − x̄|/n', 'Σ(x − x̄)²/n', 'Σx/n', 'Xmax − Xmin'],
+            a: 0
+          },
+          {
+            q: 'Varians populasi adalah...',
+            options: ['Σ(x − x̄)²/n', 'Σ|x − x̄|/n', 'Σfi/n', 'Σx/n'],
+            a: 0
+          },
+          {
+            q: 'Data: 5, 7, 10. Range?',
+            options: ['2', '3', '5', '10'],
+            a: 2
+          }
+        ]
+      },
+      {
+        name: 'Gabungan Hitung',
+        type: 'mcq',
+        items: [{
+            q: 'Data: 4, 6, 8, 10. Mean?',
+            options: ['6', '7', '8', '9'],
+            a: 1
+          },
+          {
+            q: 'Data: 1, 2, 2, 3, 9. Modus?',
+            options: ['1', '2', '3', '9'],
+            a: 1
+          },
+          {
+            q: 'Data: 3, 5, 7. Varians (populasi)?',
+            options: ['2', '2.67', '4', '1.33'],
+            a: 0
+          },
+          {
+            q: 'Data: 10, 12, 13, 15. Median?',
+            options: ['11', '12.5', '13', '14'],
+            a: 1
+          }
+        ]
+      },
+      {
+        name: 'Drag & Drop (Gabungan)',
+        type: 'drag',
+        items: [{
+            term: 'Mean',
+            def: 'Rata-rata data'
+          },
+          {
+            term: 'Median',
+            def: 'Nilai tengah data urut'
+          },
+          {
+            term: 'Modus',
+            def: 'Nilai paling sering muncul'
+          },
+          {
+            term: 'Range',
+            def: 'Xmax − Xmin'
+          }
+        ]
+      },
+      {
+        name: 'Cocokkan Pasangan',
+        type: 'match',
+        items: [{
+            left: 'Simpangan Rata-rata',
+            right: 'Σ|x − x̄|/n'
+          },
+          {
+            left: 'Varians',
+            right: 'Σ(x − x̄)²/n'
+          },
+          {
+            left: 'Kuartil 2',
+            right: 'Median'
+          },
+          {
+            left: 'Jangkauan',
+            right: 'Q3 − Q1'
+          }
+        ]
+      }
+    ];
+
+    let state = {
+      levelIdx: 0,
+      questionIdx: 0,
+      score: 0,
+      timeLeft: SECONDS_PER_QUESTION,
+      timerId: null,
+      pendingAnswer: null,
+      dragMap: {},
+      matchFirst: null,
+      matchPairsCorrect: 0,
+      levelScores: Array(5).fill(0),
+      dragSelected: null,
+      matchConnections: [],
+      levelCorrect: Array(5).fill(0),
+      levelTotal: Array(5).fill(0)
+    };
+
+    const elLevel = document.getElementById('hud-level');
+    const elQ = document.getElementById('hud-q');
+    const elScore = document.getElementById('hud-score');
+    const elTime = document.getElementById('hud-time');
+    const elFill = document.getElementById('timer-fill');
+    const elQText = document.getElementById('question-text');
+    const elInteract = document.getElementById('interaction');
+    const elResult = document.getElementById('result-box');
+
+    function setHUD() {
+      elLevel.textContent = state.levelIdx + 1;
+      const total = currentLevelTotal();
+      elQ.textContent = (state.questionIdx + 1) + ' / ' + total;
+      elScore.textContent = state.score;
+      elTime.textContent = state.timeLeft + 's';
+      elFill.style.width = (state.timeLeft / SECONDS_PER_QUESTION * 100) + '%';
+    }
+
+    function currentLevel() {
+      return levels[state.levelIdx];
+    }
+
+    function currentLevelTotal() {
+      return currentLevel().items.length;
+    }
+
+    function startTimer() {
+      clearInterval(state.timerId);
+      state.timeLeft = SECONDS_PER_QUESTION;
+      setHUD();
+      state.timerId = setInterval(() => {
+        state.timeLeft--;
+        if (state.timeLeft < 0) {
+          clearInterval(state.timerId);
+          autoFailAndNext();
+          return;
+        }
+        setHUD();
+      }, 1000);
+    }
+
+    function autoFailAndNext() {
+      elResult.textContent = 'Waktu habis. Jawaban dianggap salah.';
+      // langsung lanjut ke soal berikutnya / level berikutnya
+      const level = currentLevel();
+      if (level.type === 'mcq') {
+        state.levelTotal[state.levelIdx] += 1;
+        state.questionIdx++;
+        if (state.questionIdx >= level.items.length) {
+          finishLevelAndContinue();
+        } else {
+          loadQuestion();
+        }
+      } else {
+        finishLevelAndContinue();
+      }
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function renderMCQ(item) {
+      elQText.textContent = item.q;
+      const opts = item.options.map((t, i) =>
+        `<button class="btn option" data-idx="${i}">${t}</button>`
+      ).join('');
+      elInteract.innerHTML = `<div class="options">${opts}</div>`;
+      elInteract.querySelectorAll('.option').forEach(btn => {
+        btn.addEventListener('click', () => {
+          // pilih dan nilai langsung
+          state.pendingAnswer = Number(btn.dataset.idx);
+          elInteract.querySelectorAll('.option').forEach(b => b.classList.remove('primary'));
+          btn.classList.add('primary');
+          const level = currentLevel();
+          const itemNow = level.items[state.questionIdx];
+          const correct = Number(state.pendingAnswer) === Number(itemNow.a);
+          clearInterval(state.timerId);
+          // track totals
+          state.levelTotal[state.levelIdx] += 1;
+          if (correct) {
+            state.score += 10;
+            state.levelScores[state.levelIdx] += 10;
+            state.levelCorrect[state.levelIdx] += 1;
+            elResult.textContent = 'Benar! +10 poin';
+          } else {
+            elResult.textContent = 'Jawaban salah.';
+          }
+          elScore.textContent = state.score;
+          setTimeout(() => {
+            next();
+          }, 600);
+        });
+      });
+    }
+
+    function renderDrag(level) {
+      elQText.textContent = 'Drag istilah ke definisinya yang tepat';
+      const terms = shuffle(level.items.map(x => x.term));
+      const defs = shuffle(level.items.map(x => x.def));
+      state.dragMap = {};
+      const pool = terms.map(t => `<div class="token" draggable="true" data-term="${t}">${t}</div>`).join('');
+      const zone = defs.map(d => `<div class="slot" data-def="${d}">${d}</div>`).join('');
+      elInteract.innerHTML = `
+        <div class="row">
+          <div style="flex:1">
+            <div style="font-weight:600;margin-bottom:6px">Istilah</div>
+            <div class="drag-pool">${pool}</div>
+          </div>
+          <div style="flex:1">
+            <div style="font-weight:600;margin-bottom:6px">Definisi</div>
+            <div class="drop-zone">${zone}</div>
+          </div>
+        </div>
+      `;
+      elInteract.querySelectorAll('.token').forEach(tok => {
+        tok.addEventListener('dragstart', e => {
+          e.dataTransfer.setData('text/plain', tok.dataset.term);
+        });
+        // tap-to-select on mobile
+        tok.addEventListener('click', () => {
+          if (state.dragSelected === tok.dataset.term) {
+            state.dragSelected = null;
+            tok.style.outline = '';
+          } else {
+            state.dragSelected = tok.dataset.term;
+            elInteract.querySelectorAll('.token').forEach(t => t.style.outline = '');
+            tok.style.outline = '3px solid var(--accent)';
+            tok.style.outlineOffset = '2px';
+          }
+        });
+      });
+      elInteract.querySelectorAll('.slot').forEach(slot => {
+        slot.addEventListener('dragover', e => e.preventDefault());
+        slot.addEventListener('drop', e => {
+          e.preventDefault();
+          const term = e.dataTransfer.getData('text/plain');
+          // Cegah penggunaan term yang sama pada lebih dari satu slot
+          if (Object.values(state.dragMap).includes(term)) {
+            elResult.textContent = 'Istilah sudah digunakan.';
+            return;
+          }
+          slot.innerHTML =
+            `<strong>${slot.dataset.def}</strong><span style="margin-left:6px;">⇐</span><span class="tag">${term}</span>`;
+          state.dragMap[slot.dataset.def] = term;
+          // cek otomatis jika semua slot terisi
+          const level = currentLevel();
+          const allFilled = level.items.every(p => state.dragMap[p.def]);
+          if (allFilled) {
+            const correct = level.items.every(p => state.dragMap[p.def] === p.term);
+            clearInterval(state.timerId);
+            if (correct) {
+              state.score += 10;
+              state.levelScores[state.levelIdx] += 10;
+              elScore.textContent = state.score;
+              elResult.textContent = 'Semua benar! +10 poin';
+            } else {
+              elResult.textContent = 'Cek selesai.';
+            }
+            setTimeout(() => {
+              finishLevelAndContinue();
+            }, 600);
+          }
+        });
+        // tap-to-place
+        slot.addEventListener('click', () => {
+          if (!state.dragSelected) return;
+          const term = state.dragSelected;
+          if (Object.values(state.dragMap).includes(term)) {
+            elResult.textContent = 'Istilah sudah digunakan.';
+            return;
+          }
+          slot.innerHTML =
+            `<strong>${slot.dataset.def}</strong><span style=\"margin-left:6px;\">⇐</span><span class=\"tag\">${term}</span>`;
+          state.dragMap[slot.dataset.def] = term;
+          elInteract.querySelectorAll('.token').forEach(t => {
+            if (t.dataset.term === term) t.style.outline = '';
+          });
+          state.dragSelected = null;
+          const allFilled = level.items.every(p => state.dragMap[p.def]);
+          if (allFilled) {
+            const correct = level.items.every(p => state.dragMap[p.def] === p.term);
+            clearInterval(state.timerId);
+            if (correct) {
+              state.score += 10;
+              state.levelScores[state.levelIdx] += 10;
+              elScore.textContent = state.score;
+              elResult.textContent = 'Semua benar! +10 poin';
+            } else {
+              elResult.textContent = 'Cek selesai.';
+            }
+            setTimeout(() => {
+              finishLevelAndContinue();
+            }, 600);
+          }
+        });
+      });
+    }
+
+    function renderMatch(level) {
+      elQText.textContent = 'Cocokkan pasangan (klik kiri lalu kanan)';
+      const left = shuffle(level.items.map(x => x.left));
+      const right = shuffle(level.items.map(x => x.right));
+      state.matchFirst = null;
+      state.matchPairsCorrect = 0;
+      elInteract.innerHTML = `
+        <div class="match-wrap"><svg class="match-lines"></svg></div>
+        <div class="cols">
+          <div id="left-col">
+            <div class="small" style="margin-bottom:6px">Istilah</div>
+            ${left.map(t => `<button class="pair-btn" data-side="L" data-val="${t}">${t}</button>`).join('')}
+          </div>
+          <div id="right-col">
+            <div class="small" style="margin-bottom:6px">Definisi</div>
+            ${right.map(t => `<button class="pair-btn" data-side="R" data-val="${t}">${t}</button>`).join('')}
+          </div>
+        </div>
+      `;
+      elInteract.querySelectorAll('.pair-btn').forEach(btn => {
+        btn.addEventListener('click', () => onPairClick(level, btn));
+      });
+      state.matchConnections = [];
+      window.addEventListener('resize', drawMatchLines);
+    }
+
+    function onPairClick(level, btn) {
+      if (!state.matchFirst) {
+        state.matchFirst = btn;
+        btn.classList.add('active');
+        return;
+      }
+      if (btn === state.matchFirst || btn.dataset.side === state.matchFirst.dataset.side) {
+        state.matchFirst.classList.remove('active');
+        state.matchFirst = null;
+        return;
+      }
+      const leftVal = state.matchFirst.dataset.side === 'L' ? state.matchFirst.dataset.val : btn.dataset.val;
+      const rightVal = state.matchFirst.dataset.side === 'R' ? state.matchFirst.dataset.val : btn.dataset.val;
+      const ok = level.items.some(p => p.left === leftVal && p.right === rightVal);
+      if (ok) {
+        state.matchPairsCorrect++;
+        state.matchFirst.disabled = true;
+        btn.disabled = true;
+        state.matchFirst.classList.remove('active');
+        state.matchFirst.style.opacity = '0.6';
+        btn.style.opacity = '0.6';
+        elResult.textContent = `Cocok! (${state.matchPairsCorrect}/4)`;
+        // store connection and draw line
+        const leftEl = state.matchFirst.dataset.side === 'L' ? state.matchFirst : btn;
+        const rightEl = state.matchFirst.dataset.side === 'R' ? state.matchFirst : btn;
+        state.matchConnections.push({
+          leftEl,
+          rightEl
+        });
+        state.matchFirst = null;
+        drawMatchLines();
+        // jika semua pasangan benar, nilai dan lanjut otomatis
+        if (state.matchPairsCorrect === level.items.length) {
+          clearInterval(state.timerId);
+          state.score += 10;
+          state.levelScores[state.levelIdx] += 10;
+          elScore.textContent = state.score;
+          elResult.textContent = 'Semua pasangan benar! +10 poin';
+          setTimeout(() => {
+            finishLevelAndContinue();
+          }, 600);
+        }
+      } else {
+        state.matchFirst.classList.remove('active');
+        state.matchFirst = null;
+        elResult.textContent = 'Salah pasangan.';
+      }
+    }
+
+    function loadQuestion() {
+      clearInterval(state.timerId);
+      elResult.textContent = '';
+      state.pendingAnswer = null;
+      const level = currentLevel();
+      setHUD();
+
+      if (level.type === 'mcq') {
+        const item = level.items[state.questionIdx];
+        renderMCQ(item);
+      } else if (level.type === 'drag') {
+        renderDrag(level);
+      } else if (level.type === 'match') {
+        renderMatch(level);
+      }
+
+      startTimer();
+    }
+
+    // (submitAnswer dihapus)
+
+    function next() {
+      const level = currentLevel();
+      if (level.type === 'mcq') {
+        state.questionIdx++;
+        if (state.questionIdx >= level.items.length) {
+          return finishLevelAndContinue();
+        }
+        loadQuestion();
+        return;
+      }
+      return finishLevelAndContinue();
+    }
+
+    function showLevelToast(msg) {
+      const t = document.getElementById('level-toast');
+      const c = document.getElementById('level-toast-content');
+      c.innerHTML = msg;
+      t.style.display = 'flex';
+    }
+
+    function hideLevelToast() {
+      const t = document.getElementById('level-toast');
+      t.style.display = 'none';
+    }
+
+    function finishLevelAndContinue() {
+      // Show summary for current level
+      const idx = state.levelIdx;
+      const total = state.levelTotal[idx] || (currentLevel().type === 'mcq' ? currentLevel().items.length : 1);
+      const correct = state.levelCorrect[idx] || (currentLevel().type !== 'mcq' ? (state.levelScores[idx] > 0 ? 1 : 0) :
+        0);
+      const miss = Math.max(0, total - correct);
+      showLevelToast(
+        `Level ${idx+1} selesai<br>Benar: <b>${correct}</b> &nbsp; Miss: <b>${miss}</b><br>Lanjut ke level berikutnya...`
+      );
+      setTimeout(() => {
+        hideLevelToast();
+        state.levelIdx++;
+        state.questionIdx = 0;
+        if (state.levelIdx >= levels.length) {
+          endGame();
+          return;
+        }
+        loadQuestion();
+      }, 1200);
+    }
+
+    function endGame() {
+      clearInterval(state.timerId);
+      elQText.textContent = 'Selesai!';
+      const names = levels.map(l => l.name);
+      const rows = names.map((n, i) => {
+        const total = state.levelTotal[i] || (levels[i].type === 'mcq' ? levels[i].items.length : 1);
+        const correct = state.levelCorrect[i] || (levels[i].type !== 'mcq' ? (state.levelScores[i] > 0 ? 1 : 0) :
+          0);
+        const miss = Math.max(0, total - correct);
+        return `<tr>
+          <td style="padding:8px;border-bottom:1px solid #e5e7eb">${i+1}</td>
+          <td style="padding:8px;border-bottom:1px solid #e5e7eb">${n}</td>
+          <td style="padding:8px;border-bottom:1px solid #e5e7eb;text-align:center">${correct}/${total}</td>
+          <td style="padding:8px;border-bottom:1px solid #e5e7eb;text-align:center">${miss}</td>
+          <td style="padding:8px;border-bottom:1px solid #e5e7eb;text-align:right">${state.levelScores[i]} poin</td>
+        </tr>`;
+      }).join('');
+      elInteract.innerHTML = `
+        <div style="text-align:center">Permainan berakhir. Skor akhir: <strong>${state.score}</strong></div>
+        <div class="card" style="margin-top:12px;overflow:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:14px">
+            <thead>
+              <tr style="background:#f5f7ff;color:#334155">
+                <th style="text-align:left;padding:8px;border-bottom:1px solid #e5e7eb">Lv</th>
+                <th style="text-align:left;padding:8px;border-bottom:1px solid #e5e7eb">Nama Level</th>
+                <th style="text-align:center;padding:8px;border-bottom:1px solid #e5e7eb">Benar/Total</th>
+                <th style="text-align:center;padding:8px;border-bottom:1px solid #e5e7eb">Miss</th>
+                <th style="text-align:right;padding:8px;border-bottom:1px solid #e5e7eb">Skor</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+        </div>
+      `;
+      elResult.textContent = '';
+    }
+
+
+
+
+    function drawMatchLines() {
+      const svg = elInteract.querySelector('.match-lines');
+      if (!svg) return;
+      // clear
+      svg.innerHTML = '';
+      const wrap = elInteract.querySelector('.match-wrap');
+      if (!wrap) return;
+      const wrapRect = wrap.getBoundingClientRect();
+      state.matchConnections.forEach(({
+        leftEl,
+        rightEl
+      }) => {
+        const l = leftEl.getBoundingClientRect();
+        const r = rightEl.getBoundingClientRect();
+        const x1 = l.right - wrapRect.left;
+        const y1 = l.top + l.height / 2 - wrapRect.top;
+        const x2 = r.left - wrapRect.left;
+        const y2 = r.top + r.height / 2 - wrapRect.top;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x1);
+        line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2);
+        line.setAttribute('y2', y2);
+        line.setAttribute('class', 'match-line');
+        svg.appendChild(line);
+      });
+    }
+
+    (function init() {
+      loadQuestion();
+    })();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script>
+    // Tambah elemen audio
+    const soundCorrect = new Audio("https://assets.mixkit.co/active_storage/sfx/2015/2015-preview.mp3"); // yeyyy
+    const soundWrong = new Audio("https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3"); // totettt
+
+    // Buat overlay animasi salah
+    const redOverlay = document.createElement("div");
+    redOverlay.style.position = "fixed";
+    redOverlay.style.inset = "0";
+    redOverlay.style.background = "rgba(255,0,0,0.6)";
+    redOverlay.style.display = "none";
+    redOverlay.style.zIndex = "9999";
+    redOverlay.style.transition = "opacity 0.5s ease";
+    document.body.appendChild(redOverlay);
+
+    // Fungsi animasi benar
+    function playCorrectAnimation() {
+      soundCorrect.currentTime = 0;
+      soundCorrect.play();
+      for (let i = 0; i < 4; i++) {
+        setTimeout(() => {
+          confetti({
+            particleCount: 100,
+            spread: 80,
+            origin: {
+              y: 0.6
+            }
+          });
+        }, i * 200);
+      }
+    }
+
+    // Fungsi animasi salah
+    function playWrongAnimation() {
+      soundWrong.currentTime = 0;
+      soundWrong.play();
+      redOverlay.style.display = "block";
+      redOverlay.style.opacity = "1";
+      setTimeout(() => {
+        redOverlay.style.opacity = "0";
+        setTimeout(() => {
+          redOverlay.style.display = "none";
+        }, 300);
+      }, 500);
+    }
+
+    // Tambahkan efek ke penilaian jawaban multiple choice
+    const oldRenderMCQ = renderMCQ;
+    renderMCQ = function (item) {
+      oldRenderMCQ(item);
+      elInteract.querySelectorAll('.option').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const level = currentLevel();
+          const current = level.items[state.questionIdx];
+          const correct = Number(btn.dataset.idx) === current.a;
+          if (correct) playCorrectAnimation();
+          else playWrongAnimation();
+        });
+      });
+    };
+  </script>
+
+  </script>
+
+</body>
+
+</html>

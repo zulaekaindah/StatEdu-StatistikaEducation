@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Latihan | StatEdu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f7fbff;
+            --card: #fff;
+            --accent: #2f6bff;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', system-ui, Arial;
+            margin: 0;
+            background: var(--bg);
+            color: #0f1724;
+            padding: 20px;
+        }
+
+        .wrap {
+            max-width: 980px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .brand {
+            width: 48px;
+            height: 48;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #7dd3fc, #7c3aed);
+            display: grid;
+            place-items: center;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        p.lead {
+            margin: 6px 0 0;
+            color: var(--muted);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 8px 20px rgba(2, 6, 23, 0.06);
+            border: 1px solid rgba(15, 23, 42, 0.03);
+        }
+
+        .card h3 {
+            margin: 0 0 8px;
+            font-size: 16px;
+        }
+
+        /* Tables: keep columns on one line; allow horizontal scroll inside card */
+        .card .table-wrap {
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table.calc {
+            width: max-content;
+            min-width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        table.calc th,
+        table.calc td {
+            padding: 8px;
+            border-bottom: 1px solid #eef2ff;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        table.calc thead th {
+            background: #f1f5ff;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        button {
+            cursor: pointer;
+            border: 0;
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: #eef4ff;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .btn-reveal {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .answer {
+            margin-top: 10px;
+            padding: 10px;
+            background: #fbfdff;
+            border-left: 4px solid rgba(47, 107, 255, 0.08);
+            display: none;
+            color: var(--muted);
+        }
+
+        .small {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        @media(min-width:860px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width:420px) {
+            .card h3 {
+                font-size: 15px;
+            }
+
+            table.calc {
+                font-size: 12px;
+            }
+
+            table.calc th,
+            table.calc td {
+                padding: 6px 8px;
+            }
+
+            .answer {
+                font-size: 13px;
+            }
+        }
+
+        /* fixed back button aligned to the .wrap left edge */
+        /* Tombol kembali selalu terlihat di layar */
+        .back-fixed {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 44px;
+            height: 44px;
+            background: var(--card);
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 1000;
+        }
+
+        .back-fixed:hover {
+            background: var(--accent);
+        }
+
+        .back-fixed svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--accent);
+            transition: fill 0.2s ease;
+        }
+
+        .back-fixed:hover svg {
+            fill: white;
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: #888;
+            text-align: center;
+        }
+
+        @media (max-width:520px) {
+
+            /* on very small screens pin inside viewport so it won't push content off-screen */
+            .back-fixed {
+                left: 12px !important;
+                top: 12px !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <!-- fixed back icon (aligns to .wrap via JS) -->
+        <a href="student-dashboard.html" id="backBtn" class="back-fixed" title="Kembali ke Dashboard"
+            aria-label="Kembali ke Dashboard">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+            </svg>
+        </a>
+
+        <header>
+            <div class="brand">L</div>
+            <div>
+                <h1>Latihan: 10 Soal Pemusatan Data & Penyebaran Data</h1>
+                <p class="lead">10 nomor latihan gabungan. Klik "Tunjukkan Jawaban" untuk melihat langkah.</p>
+            </div>
+        </header>
+
+        <div class="grid">
+            <!-- 1 -->
+            <section class="card" id="q1">
+                <h3>1. Mean (data tunggal)</h3>
+                <div class="small">Diketahui: 12, 15, 18, 20, 25</div>
+                <div class="actions"><button class="btn-reveal" data-target="a1">Tunjukkan Jawaban</button></div>
+                <div class="answer" id="a1">
+                    <div><b>Diketahui:</b> Data = 12, 15, 18, 20, 25</div>
+                    <div><b>Rumus:</b> x̄ = Σx / n</div>
+                    <div><b>Perhitungan:</b></div>
+                    <ol>
+                        <li>Σx = 12 + 15 + 18 + 20 + 25 = 90</li>
+                        <li>n = 5</li>
+                        <li>x̄ = 90 / 5 = 18</li>
+                    </ol>
+                    <div><b>Jawab:</b> Mean = <strong>18</strong></div>
+                </div>
+            </section>
+
+            <!-- 2 -->
+            <section class="card" id="q2">
+                <h3>2. Mean (data kelompok)</h3>
+                <div class="small">Tabel frekuensi</div>
+                <div class="table-wrap">
+                    <table class="calc">
+                        <thead>
+                            <tr>
+                                <th>Kelas</th>
+                                <th>fi</th>
+                                <th>xi</th>
+                                <th>fi×xi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10–19</td>
+                                <td>4</td>
+                                <td>14.5</td>
+                                <td>58.0</td>
+                            </tr>
+                            <tr>
+                                <td>20–29</td>
+                                <td>6</td>
+                                <td>24.5</td>
+                                <td>147.0</td>
+                            </tr>
+                            <tr>
+                                <td>30–39</td>
+                                <td>8</td>
+                                <td>34.5</td>
+                                <td>276.0</td>
+                            </tr>
+                            <tr>
+                                <td>40–49</td>
+                                <td>7</td>
+                                <td>44.5</td>
+                                <td>311.5</td>
+                            </tr>
+                            <tr>
+                                <td>50–59</td>
+                                <td>5</td>
+                                <td>54.5</td>
+                                <td>272.5</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Total</th>
+                                <th>30</th>
+                                <th></th>
+                                <th>1065.0</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="actions"><button class="btn-reveal" data-target="a2">Tunjukkan Jawaban</button></div>
+                <div class="answer" id="a2">
+                    <div><b>Diketahui:</b> Σ(fi×xi) = 1065.0, Σfi = 30</div>
+                    <div><b>Rumus:</b> x̄ = Σ(fi × xi) / Σfi</div>
+                    <div><b>Perhitungan:</b></div>
+                    <ol>
+                        <li>x̄ = 1065.0 / 30</li>
+                        <li>x̄ = 35.5</li>
+                    </ol>
+                    <div><b>Jawab:</b> Mean ≈ <strong>35.5</strong></div>
+                </div>
+            </section>
+
+            <!-- 3 -->
+            <section class="card" id="q3">
+                <h3>3. Median (data tunggal)</h3>
+                <div class="small">Diketahui: 7, 9, 12, 14, 18, 20</div>
+                <div class="actions"><button class="btn-reveal" data-target="a3">Tunjukkan Jawaban</button></div>
+                <div class="answer" id="a3">
+                    <div><b>Diketahui:</b> Data terurut: 7, 9, 12, 14, 18, 20</div>
+                    <div><b>Rumus (genap):</b> Median = (data ke-(n/2) + data ke-(n/2 +1)) / 2</div>
+                    <div><b>Perhitungan:</b></div>
+                    <ol>
+                        <li>n = 6 → posisi tengah: ke-3 dan ke-4</li>
+                        <li>data ke-3 = 12, data ke-4 = 14</li>
+                        <li>Median = (12 + 14) / 2 = 13</li>
+                    </ol>
+                    <div><b>Jawab:</b> Median = <strong>13</strong></div>
+                </div>
+            </section>
+
+            <!-- 4 -->
+            <section class="card" id="q4">
+                <h3>4. Median (data kelompok)</h3>
+                <div class="small">Tabel frekuensi</div>
+                <div class="table-wrap">
+                    <table class="calc">
+                        <thead>
+                            <tr>
+                                <th>Kelas</th>
+                                <th>fi</th>
+                                <th>F</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10–19</td>
+                                <td>3</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>20–29</td>
+                                <td>5</td>
+                                <td>8</td>
+                            </tr>
+                            <tr>
+                                <td>30–39</td>
+                                <td>9</td>
+                                <td>17</td>
+                            </tr>
+                            <tr>
+                                <td>40–49</td>
+                                <td>8</td>
+                                <td>25</td>
+                            </tr>
+                            <tr>
+                                <td>50–59</td>
+                                <td>5</td>
+                                <td>30</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="actions"><button class="btn-reveal" data-target="a4">Tunjukkan Jawaban</button></div>
+                <div class="answer" id="a4">
+                    <div><b>Diketahui:</b> Σfi = 30 → ½n = 15</div>
+                    <div><b>Langkah:</b> Cari kelas yang memuat posisi 15 → lihat kolom F → kelas 30–39 (F sebelumnya =
+                        8)</div>
+                    <div><b>Rumus:</b> Median = Tb + p ((½n - F) / f)</div>
+                    <div><b>Perhitungan:</b></div>
+                    <ol>
+                        <li>L (tepi bawah kelas 30–39) = 29.5</li>
+                        <li>F = 8, f = 9, p = 10</li>
+                        <li>Me = 29.5 + ((15 − 8) / 9) × 10 ≈ 29.5 + 7.78 = 37.28</li>
+                    </ol>
+                    <div><b>Jawab:</b> Median ≈ <strong>37.28</strong></div>
+                </div>
+            </section>
+
+            <!-- 5 -->
+            <section class="card" id="q5">
+                <h3>5. Modus (data tunggal)</h3>
+                <div class="small">Diketahui: 3, 5, 5, 7, 8, 5, 9</div>
+                <div class="actions"><button class="btn-reveal" data-target="a5">Tunjukkan Jawaban</button></div>
+                <div class="answer" id="a5">
+                    <div><b>Langkah:</b></div>
+                    <ol>
+                        <li>Hitung frekuensi tiap nilai: 5 muncul 3 kali, nilai lain kurang.</li>
+                        <li>Modus = nilai dengan frekuensi terbesar → 5</li>
+                    </ol>
+                    <div><b>Jawab:</b> Modus = <strong>5</strong></div>
+                </div>
+            </section>
+
+            <!-- 6 -->
+            <section class="card" id="q6">
+                <h3>6. Modus (data kelompok)</h3>
+                <div class="small">Tabel frekuensi</div>
+                <div class="table-wrap">
+                    <table class="calc">
+                        <thead>
+                            <tr>
+                                <th>Kelas</th>
+                                <th>fi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10–19</td>
+                                <td>4</td>
+                            </tr>
+                            <tr>
+                                <td>20–29</td>
+                                <td>7</td>
+                            </tr>
+                            <tr>
+                                <td>30–39</td>
+                                <td>10</td>
+                            </tr>
+                            <tr>
+                                <td>40–49</td>
+                                <td>6</td>
+                            </tr>
+                            <tr>
+                                <td>50–59</td>
+                                <td>3</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="actions"><button class="btn-reveal" data-target="a6">Tunjukkan Jawaban</button></div>
+                <div class="answer" id="a6">
+                    <div><b>Diketahui:</b> Kelas modal = 30–39 (f = 10)</div>
+                    <div><b>Rumus:</b> Mo = L + (d1 / (d1 + d2)) × p</div>
+                    <div><b>Perhitungan:</b></div>
+                    <ol>
+                        <li>d1 = 10 − 7 = 3, d2 = 10 − 6 = 4</li>
+                        <li>L = 29.5, p = 10</li>
+                        <li>Mo = 29.5 + (3 / (3 + 4)) × 10 ≈ 29.5 + 4.29 = 33.79</li>
+                    </ol>
+                    <div><b>Jawab:</b> Modus ≈ <strong>33.79</strong></div>
+                </div>
+            </section>
+
+            <!-- 7 -->
+            <section class="card" id="q7">
+                <h3>7. Penyebaran — Jangkauan (Range)</h3>
+                <div class="small">Data tunggal: 63, 68, 73, 78, 83, 88</div>
+                <div class="actions"><button class="btn-reveal" data-target="a7">Tunjukkan Jawaban</button></div>
+                <div class="answer" id="a7">
+                    <div><b>Diketahui:</b> Nilai terkecil = 63, terbesar = 88</div>
+                    <div><b>Rumus:</b> R = X<sub>maks</sub> − X<sub>min</sub></div>
+                    <div><b>Perhitungan:</b></div>
+                    <ol>
+                        <li>Range = 88 − 63 = 25</li>
+                    </ol>
+                    <div><b>Jawab:</b> Jangkauan = <strong>25</strong></div>
+                </div>
+            </section>
+
+            <!-- 8 -->
+            <section class="card" id="q8">
+                <h3>8. Penyebaran — Simpangan Rata-rata (SR)</h3>
+                <div class="small">Data: 65, 70, 75, 80, 85</div>
+                <div class="actions"><button class="btn-reveal" data-target="a8">Tunjukkan Jawaban</button></div>
+                <div class="answer" id="a8">
+                    <div><b>Diketahui:</b> Data = 65, 70, 75, 80, 85</div>
+                    <div><b>Rumus:</b> SR = Σ|x − x̄| / n</div>
+                    <div><b>Perhitungan:</b></div>
+                    <ol>
+                        <li>Mean x̄ = (65+70+75+80+85)/5 = 75</li>
+                        <li>|x − x̄| = 10, 5, 0, 5, 10 → Σ|x − x̄| = 30</li>
+                        <li>SR = 30 / 5 = 6</li>
+                    </ol>
+                    <div><b>Jawab:</b> Simpangan rata-rata ≈ <strong>6</strong></div>
+                </div>
+            </section>
+
+            <!-- 9 -->
+            <section class="card" id="q9">
+                <h3>9. Varians & Standar Deviasi (data kelompok)</h3>
+                <div class="small">Gunakan tabel berikut</div>
+                <div class="table-wrap">
+                    <table class="calc">
+                        <thead>
+                            <tr>
+                                <th>Kelas</th>
+                                <th>fi</th>
+                                <th>xi</th>
+                                <th>(xi−x̄)²</th>
+                                <th>fi·(xi−x̄)²</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>63–67</td>
+                                <td>2</td>
+                                <td>65</td>
+                                <td>144</td>
+                                <td>288</td>
+                            </tr>
+                            <tr>
+                                <td>68–72</td>
+                                <td>3</td>
+                                <td>70</td>
+                                <td>49</td>
+                                <td>147</td>
+                            </tr>
+                            <tr>
+                                <td>73–77</td>
+                                <td>6</td>
+                                <td>75</td>
+                                <td>4</td>
+                                <td>24</td>
+                            </tr>
+                            <tr>
+                                <td>78–82</td>
+                                <td>4</td>
+                                <td>80</td>
+                                <td>9</td>
+                                <td>36</td>
+                            </tr>
+                            <tr>
+                                <td>83–87</td>
+                                <td>4</td>
+                                <td>85</td>
+                                <td>64</td>
+                                <td>256</td>
+                            </tr>
+                            <tr>
+                                <td>88–92</td>
+                                <td>1</td>
+                                <td>90</td>
+                                <td>169</td>
+                                <td>169</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Total</th>
+                                <th>20</th>
+                                <th>—</th>
+                                <th>—</th>
+                                <th>920</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="actions"><button class="btn-reveal" data-target="a9">Tunjukkan Jawaban</button></div>
+                <div class="answer" id="a9">
+                    <div><b>Diketahui:</b> Σfi = 20; Σ[fi·(xi−x̄)²] = 920</div>
+                    <div><b>Rumus (populasi):</b> σ² = Σ[fi·(xi−x̄)²] / Σfi</div>
+                    <div><b>Perhitungan:</b></div>
+                    <ol>
+                        <li>σ² = 920 / 20 = 46</li>
+                        <li>σ = √46 ≈ 6.78</li>
+                    </ol>
+                    <div><b>Jawab:</b> Varians ≈ <strong>46</strong>, Std. Deviasi ≈ <strong>6.78</strong></div>
+                </div>
+            </section>
+
+            <!-- 10 -->
+            <section class="card" id="q10">
+                <h3>10. Simpangan Rata-rata (data kelompok)</h3>
+                <div class="small">Tabel sederhana</div>
+                <div class="table-wrap">
+                    <table class="calc">
+                        <thead>
+                            <tr>
+                                <th>Kelas</th>
+                                <th>fi</th>
+                                <th>xi</th>
+                                <th>|xi−x̄|</th>
+                                <th>fi·|xi−x̄|</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10–19</td>
+                                <td>3</td>
+                                <td>14.5</td>
+                                <td>6.75</td>
+                                <td>20.25</td>
+                            </tr>
+                            <tr>
+                                <td>20–29</td>
+                                <td>5</td>
+                                <td>24.5</td>
+                                <td>3.25</td>
+                                <td>16.25</td>
+                            </tr>
+                            <tr>
+                                <td>30–39</td>
+                                <td>7</td>
+                                <td>34.5</td>
+                                <td>0.75</td>
+                                <td>5.25</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Total</th>
+                                <th>15</th>
+                                <th>—</th>
+                                <th>—</th>
+                                <th>41.75</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="actions"><button class="btn-reveal" data-target="a10">Tunjukkan Jawaban</button></div>
+                <div class="answer" id="a10">
+                    <div><b>Diketahui:</b> Σfi = 15 ; Σ[fi·|xi−x̄|] = 41.75</div>
+                    <div><b>Rumus:</b> SR = Σ[fi·|xi−x̄|] / Σfi</div>
+                    <div><b>Perhitungan:</b></div>
+                    <ol>
+                        <li>SR = 41.75 / 15 ≈ 2.78</li>
+                    </ol>
+                    <div><b>Jawab:</b> SR ≈ <strong>2.78</strong></div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <footer>
+        © 2025 StatEdu - Platform Pembelajaran Statistika
+    </footer>
+    <script>
+        document.querySelectorAll('.btn-reveal').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-target');
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+                btn.textContent = (el.style.display === 'block') ? 'Sembunyikan Jawaban' :
+                    'Tunjukkan Jawaban';
+            });
+        });
+
+        // Position backBtn so it sits to the left of the .wrap and vertically centered with the header.
+    </script>
+</body>
+
+</html>
